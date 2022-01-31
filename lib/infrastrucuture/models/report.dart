@@ -36,6 +36,7 @@ class ReportModel {
         "docID": docID,
         "postID": postId,
         "authorID": authorId,
-        "time": time,
+        "time": Timestamp.fromDate(DateTime.now()),
       };
 }
+

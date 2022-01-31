@@ -19,11 +19,13 @@ class PostModel {
     this.image,
     this.likeCounter,
     this.time,
+    this.likers,
   });
 
   String? docId;
   String? authorId;
   String? postBody;
+  List<String>? likers;
   String? image;
   int? likeCounter;
   Timestamp? time;
@@ -33,8 +35,9 @@ class PostModel {
         authorId: json["authorID"],
         postBody: json["postBody"],
         image: json["image"],
-    time: json["time"],
+        time: json["time"],
         likeCounter: json["likeCounter"],
+        likers: List<String>.from(json["likers"].map((x) => x)),
       );
 
   Map<String, dynamic> toJson(String docID) => {
@@ -42,7 +45,8 @@ class PostModel {
         "authorID": authorId,
         "postBody": postBody,
         "image": image,
-        "likeCounter": likeCounter,
-        "time": time,
+        "likeCounter": 0,
+        "time": Timestamp.fromDate(DateTime.now()),
+        "likers":[],
       };
 }

@@ -1,12 +1,10 @@
 import 'package:booster/booster.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:you_2_art/presentations/elements/app_button_icon.dart';
-import 'package:you_2_art/presentations/elements/app_button_shadow.dart';
-import 'package:you_2_art/presentations/elements/app_button_short.dart';
+import 'package:you_2_art/infrastrucuture/models/connection.dart';
+import 'package:you_2_art/infrastrucuture/services/connection.dart';
 import 'package:you_2_art/presentations/elements/auth_text_field_simple.dart';
 import 'package:you_2_art/presentations/elements/grid_view_widget_talent.dart';
-import 'package:you_2_art/presentations/elements/search_file.dart';
 
 class TalentView extends StatefulWidget {
   @override
@@ -14,9 +12,18 @@ class TalentView extends StatefulWidget {
 }
 
 class _TalentViewState extends State<TalentView> {
+  TextEditingController _controller = TextEditingController();
+  ConnectionServices _connectionServices = ConnectionServices();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _connectionServices.addConnectionRequest(
+              ConnectionModel(userId: '1', otherId: '2', users: ['1', '2']));
+        },
+      ),
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -59,25 +66,30 @@ class _TalentViewState extends State<TalentView> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(child: AuthTextFieldSimple(label: 'Actor,Hyderabad', number: 1)),
-              Booster.horizontalSpace(10),
-              Booster.dynamicFontSize(
-                  label: 'Fliter',
-                  fontSize: 14,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w700),
+              Row(
+                children: [
+                  Expanded(
+                      child: AuthTextFieldSimple(
+                    label: 'Actor,Hyderabad',
+                    number: 1,
+                    controller: _controller,
+                  )),
+                  Booster.horizontalSpace(10),
+                  Booster.dynamicFontSize(
+                      label: 'Fliter',
+                      fontSize: 14,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w700),
+                ],
+              ),
+              Booster.verticalSpace(25),
+              GridViewWidget(),
             ],
           ),
-          Booster.verticalSpace(25),
-          GridViewWidget(),
-        ],
-      ),
         ),
       ),
     );

@@ -1,10 +1,11 @@
 import 'package:booster/booster.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:you_2_art/presentations/elements/auth_text_field.dart';
 import 'package:you_2_art/presentations/elements/auth_text_field_simple.dart';
 
 class ActivityHomeEditPost extends StatelessWidget {
+  TextEditingController _controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,7 +61,12 @@ class ActivityHomeEditPost extends StatelessWidget {
                     backgroundImage: AssetImage('assets/images/person.jpg'),
                   ),
                   Booster.horizontalSpace(15),
-                  Expanded(child: AuthTextFieldSimple(label: 'What\'s new?', number: 1))
+                  Expanded(
+                      child: AuthTextFieldSimple(
+                    label: 'What\'s new?',
+                    number: 1,
+                    controller: _controller,
+                  ))
                 ],
               ),
               Booster.verticalSpace(10),
@@ -78,7 +84,8 @@ class ActivityHomeEditPost extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 20,
-                          backgroundImage: AssetImage('assets/images/person.jpg'),
+                          backgroundImage:
+                              AssetImage('assets/images/person.jpg'),
                         ),
                         Booster.horizontalSpace(15),
                         Column(
@@ -118,7 +125,7 @@ class ActivityHomeEditPost extends StatelessWidget {
               ),
               Booster.verticalSpace(13),
               Padding(
-                padding: const EdgeInsets.only(left: 15,right: 10),
+                padding: const EdgeInsets.only(left: 15, right: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -136,7 +143,8 @@ class ActivityHomeEditPost extends StatelessWidget {
                             fontWeight: FontWeight.w700,
                             color: Color(0xff7A8FA6)),
                         Booster.horizontalSpace(15),
-                        ImageIcon(AssetImage('assets/images/Group 16131.png'),size: 15,color: Color(0xff7A8FA6)),
+                        ImageIcon(AssetImage('assets/images/Group 16131.png'),
+                            size: 15, color: Color(0xff7A8FA6)),
                         Booster.horizontalSpace(3),
                         Booster.dynamicFontSize(
                             label: '57',
@@ -144,7 +152,8 @@ class ActivityHomeEditPost extends StatelessWidget {
                             fontWeight: FontWeight.w700,
                             color: Color(0xff7A8FA6)),
                         Booster.horizontalSpace(15),
-                        ImageIcon(AssetImage('assets/images/19.png'),size: 15,color: Color(0xff7A8FA6)),
+                        ImageIcon(AssetImage('assets/images/19.png'),
+                            size: 15, color: Color(0xff7A8FA6)),
                         Booster.horizontalSpace(3),
                         Booster.dynamicFontSize(
                             label: '33',
@@ -171,7 +180,8 @@ class ActivityHomeEditPost extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 20,
-                          backgroundImage: AssetImage('assets/images/person.jpg'),
+                          backgroundImage:
+                              AssetImage('assets/images/person.jpg'),
                         ),
                         Booster.horizontalSpace(15),
                         Column(
@@ -199,10 +209,10 @@ class ActivityHomeEditPost extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 55,right: 30),
+                padding: const EdgeInsets.only(left: 55, right: 30),
                 child: Booster.dynamicFontSize(
                     label:
-                    'Wow! Just amazing. I love your profile content. Look forward to see more.Well done!',
+                        'Wow! Just amazing. I love your profile content. Look forward to see more.Well done!',
                     fontSize: 12,
                     lineHeight: 1.3,
                     fontWeight: FontWeight.w400,
@@ -210,7 +220,7 @@ class ActivityHomeEditPost extends StatelessWidget {
               ),
               Booster.verticalSpace(13),
               Padding(
-                padding: const EdgeInsets.only(left: 15,right: 10),
+                padding: const EdgeInsets.only(left: 15, right: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -228,7 +238,8 @@ class ActivityHomeEditPost extends StatelessWidget {
                             fontWeight: FontWeight.w700,
                             color: Color(0xff7A8FA6)),
                         Booster.horizontalSpace(15),
-                        ImageIcon(AssetImage('assets/images/Group 16131.png'),size: 15,color: Color(0xff7A8FA6)),
+                        ImageIcon(AssetImage('assets/images/Group 16131.png'),
+                            size: 15, color: Color(0xff7A8FA6)),
                         Booster.horizontalSpace(3),
                         Booster.dynamicFontSize(
                             label: '57',
@@ -236,7 +247,8 @@ class ActivityHomeEditPost extends StatelessWidget {
                             fontWeight: FontWeight.w700,
                             color: Color(0xff7A8FA6)),
                         Booster.horizontalSpace(15),
-                        ImageIcon(AssetImage('assets/images/19.png'),size: 15,color: Color(0xff7A8FA6)),
+                        ImageIcon(AssetImage('assets/images/19.png'),
+                            size: 15, color: Color(0xff7A8FA6)),
                         Booster.horizontalSpace(3),
                         Booster.dynamicFontSize(
                             label: '33',
@@ -263,7 +275,8 @@ class ActivityHomeEditPost extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 20,
-                          backgroundImage: AssetImage('assets/images/person.jpg'),
+                          backgroundImage:
+                              AssetImage('assets/images/person.jpg'),
                         ),
                         Booster.horizontalSpace(15),
                         Column(
@@ -291,10 +304,10 @@ class ActivityHomeEditPost extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 55,right: 30),
+                padding: const EdgeInsets.only(left: 55, right: 30),
                 child: Booster.dynamicFontSize(
                     label:
-                    'Wow! Just amazing. I love your profile content. Look forward to see more.Well done!',
+                        'Wow! Just amazing. I love your profile content. Look forward to see more.Well done!',
                     fontSize: 12,
                     lineHeight: 1.3,
                     fontWeight: FontWeight.w400,
@@ -302,7 +315,7 @@ class ActivityHomeEditPost extends StatelessWidget {
               ),
               Booster.verticalSpace(13),
               Padding(
-                padding: const EdgeInsets.only(left: 15,right: 10),
+                padding: const EdgeInsets.only(left: 15, right: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -320,7 +333,8 @@ class ActivityHomeEditPost extends StatelessWidget {
                             fontWeight: FontWeight.w700,
                             color: Color(0xff7A8FA6)),
                         Booster.horizontalSpace(15),
-                        ImageIcon(AssetImage('assets/images/Group 16131.png'),size: 15,color: Color(0xff7A8FA6)),
+                        ImageIcon(AssetImage('assets/images/Group 16131.png'),
+                            size: 15, color: Color(0xff7A8FA6)),
                         Booster.horizontalSpace(3),
                         Booster.dynamicFontSize(
                             label: '57',
@@ -328,7 +342,8 @@ class ActivityHomeEditPost extends StatelessWidget {
                             fontWeight: FontWeight.w700,
                             color: Color(0xff7A8FA6)),
                         Booster.horizontalSpace(15),
-                        ImageIcon(AssetImage('assets/images/19.png'),size: 15,color: Color(0xff7A8FA6)),
+                        ImageIcon(AssetImage('assets/images/19.png'),
+                            size: 15, color: Color(0xff7A8FA6)),
                         Booster.horizontalSpace(3),
                         Booster.dynamicFontSize(
                             label: '33',
@@ -345,7 +360,8 @@ class ActivityHomeEditPost extends StatelessWidget {
                   ],
                 ),
               ),
-              Booster.verticalSpace(20),],
+              Booster.verticalSpace(20),
+            ],
           ),
         ),
       ),

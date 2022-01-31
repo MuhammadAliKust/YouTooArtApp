@@ -37,8 +37,8 @@ class CommentModel {
 
   Map<String, dynamic> toJson(String docID) => {
     "docID": docID,
-    "videoID": postID,
-    "farmerID": authorID,
+    "postID": postID,
+    "authorID": authorID,
     "time": time,
     "comment": comment,
   };

@@ -5,8 +5,9 @@ class CommentServices {
   ///Get Specific Post Comments
   Stream<List<CommentModel>> streamPostComment(String postID) {
     return FirebaseFirestore.instance
-        .collection('postCollection')
+        .collection('commentCollection')
         .where('postID', isEqualTo: postID)
+        .orderBy('time', descending: true)
         .snapshots()
         .map((event) => event.docs
             .map((e) => CommentModel.fromJson(e.data() as Map<String, dynamic>))
@@ -16,7 +17,7 @@ class CommentServices {
   ///Add Comments
   Future addPostComment(CommentModel commentModel) {
     return FirebaseFirestore.instance
-        .collection('postCollection')
+        .collection('commentCollection')
         .add(commentModel.toJson(commentModel.docId.toString()));
   }
 }

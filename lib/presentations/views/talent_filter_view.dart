@@ -1,12 +1,13 @@
+import 'package:booster/booster.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:booster/booster.dart';
 import 'package:you_2_art/configs/front_end_configs.dart';
 import 'package:you_2_art/presentations/elements/app_button_short.dart';
 import 'package:you_2_art/presentations/elements/auth_text_field_simple.dart';
-import 'package:you_2_art/presentations/elements/grid_view_widget_talent.dart';
 
 class TalentFilter extends StatelessWidget {
+  TextEditingController _controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,7 +61,9 @@ class TalentFilter extends StatelessWidget {
                 children: [
                   Expanded(
                       child: AuthTextFieldSimple(
-                          label: 'Actor,Hyderabad', number: 1)),
+                          controller: _controller,
+                          label: 'Actor,Hyderabad',
+                          number: 1)),
                   Booster.horizontalSpace(10),
                   Booster.dynamicFontSize(
                       label: 'Fliter',
@@ -99,7 +102,11 @@ class TalentFilter extends StatelessWidget {
                   color: Colors.black,
                   fontWeight: FontWeight.w500),
               Booster.verticalSpace(10),
-              AuthTextFieldSimple(label: 'Hyderabad', number: 1),
+              AuthTextFieldSimple(
+                label: 'Hyderabad',
+                number: 1,
+                controller: _controller,
+              ),
               Booster.verticalSpace(10),
               Booster.dynamicFontSize(
                   label: 'Enter Talent',
@@ -107,7 +114,11 @@ class TalentFilter extends StatelessWidget {
                   color: Colors.black,
                   fontWeight: FontWeight.w500),
               Booster.verticalSpace(10),
-              AuthTextFieldSimple(label: 'Search here', number: 1),
+              AuthTextFieldSimple(
+                label: 'Search here',
+                number: 1,
+                controller: _controller,
+              ),
               Booster.verticalSpace(20),
               Row(
                 children: [
@@ -505,9 +516,7 @@ class TalentFilter extends StatelessWidget {
                   ),
                   Booster.horizontalSpace(15),
                   Booster.dynamicFontSize(
-                      label: 'VFX',
-                      fontSize: 15,
-                      fontWeight: FontWeight.w400),
+                      label: 'VFX', fontSize: 15, fontWeight: FontWeight.w400),
                 ],
               ),
               Booster.verticalSpace(20),
@@ -532,7 +541,8 @@ class TalentFilter extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  AppButtonShort(onTap: (){}, text: 'Next', color: Color(0xffFEB400)),
+                  AppButtonShort(
+                      onTap: () {}, text: 'Next', color: Color(0xffFEB400)),
                 ],
               ),
               Booster.verticalSpace(20),

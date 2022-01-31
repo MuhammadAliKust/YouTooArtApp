@@ -30,11 +30,31 @@ class PostServices {
         .add(postModel.toJson(postModel.docId.toString()));
   }
 
+  ///Update Post
+  Future updatePost(PostModel postModel) async {
+    return await FirebaseFirestore.instance
+        .collection('talentPostCollection')
+        .doc(postModel.docId)
+        .update({'postBody': postModel.postBody, 'image': postModel.image});
+  }
+
   ///Increment Post Like Counter
-  Future incrementPostCounter(String postID) async {
+  Future incrementPostCounter(
+      {required String postID, required String likerID}) async {
     return await FirebaseFirestore.instance
         .collection('talentPostCollection')
         .doc(postID)
-        .update({'likeCounter': FieldValue.increment(1)});
+        .update({
+      'likeCounter': FieldValue.increment(1),
+      'likers': FieldValue.arrayUnion([likerID])
+    });
+  }
+
+  ///Delete Post
+  Future<void> deletePost(String postID) async {
+    return await FirebaseFirestore.instance
+        .collection('talentPostCollection')
+        .doc(postID)
+        .delete();
   }
 }

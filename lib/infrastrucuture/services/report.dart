@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:you_2_art/infrastrucuture/models/report.dart';
 
-class PostServices {
+class ReportServices {
   ///Add Report
   Future addReport(ReportModel reportModel) async {
     return await FirebaseFirestore.instance

@@ -1,322 +1,198 @@
 import 'package:booster/booster.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:provider/provider.dart';
+import 'package:you_2_art/infrastrucuture/models/comment.dart';
+import 'package:you_2_art/infrastrucuture/models/post.dart';
+import 'package:you_2_art/infrastrucuture/models/talent.dart';
+import 'package:you_2_art/infrastrucuture/services/comment.dart';
+import 'package:you_2_art/infrastrucuture/services/talent.dart';
 import 'package:you_2_art/presentations/elements/auth_text_field_simple.dart';
+import 'package:you_2_art/presentations/elements/comment_tile.dart';
 
 class ActivityPost extends StatelessWidget {
+  final PostModel postModel;
+  final int commentsCounter;
+
+  ActivityPost(this.postModel, this.commentsCounter);
+
+  CommentServices _commentServices = CommentServices();
+  TalentServices _talentServices = TalentServices();
+  TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 15),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            CircleAvatar(
-              radius: 20,
-              backgroundImage: AssetImage('assets/images/person.jpg'),
-            ),
-            Booster.horizontalSpace(10),
-            Expanded(child: AuthTextFieldSimple(label: 'Add a comment', number: 1)),
-          ],
+      // resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        title: Text(
+          "Post Details",
+          style: TextStyle(color: Colors.black),
         ),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: Icon(
+            CupertinoIcons.back,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            Get.back();
+          },
+        ),
+        elevation: 0,
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Stack(
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 350,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(22),
-                        bottomRight: Radius.circular(22),
-                      ),
-                      image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: AssetImage('assets/images/post.png'),
-                      )
+                  if (postModel.image! != "")
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 350,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(22),
+                            bottomRight: Radius.circular(22),
+                          ),
+                          image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image: NetworkImage(postModel.image.toString()),
+                          )),
+                    ),
+                  Booster.verticalSpace(10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Booster.dynamicFontSize(
+                      label: postModel.postBody.toString(),
+                      fontSize: 14,
                     ),
                   ),
-                  Positioned.fill(
-                      top: 30,
-                      child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Icon(Icons.arrow_back,size: 25,color: Colors.white,),
-                                Icon(Icons.more_vert_sharp,size: 25,color: Colors.white,)
-                              ],
-                            )
-                          ))),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      children: [
+                        Booster.verticalSpace(20),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15, right: 10),
+                          child: Row(
+                            children: [
+                              Icon(
+                                CupertinoIcons.heart_solid,
+                                color: Colors.red,
+                                size: 18,
+                              ),
+                              Booster.horizontalSpace(3),
+                              Booster.dynamicFontSize(
+                                  label: postModel.likeCounter.toString(),
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xff7A8FA6)),
+                              Booster.horizontalSpace(15),
+                              ImageIcon(
+                                  AssetImage('assets/images/Group 16131.png'),
+                                  size: 15,
+                                  color: Color(0xff7A8FA6)),
+                              Booster.horizontalSpace(3),
+                              Booster.dynamicFontSize(
+                                  label: commentsCounter.toString(),
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xff7A8FA6)),
+                              Booster.horizontalSpace(15),
+                              ImageIcon(AssetImage('assets/images/19.png'),
+                                  size: 15, color: Color(0xff7A8FA6)),
+                              Booster.horizontalSpace(3),
+                              Booster.dynamicFontSize(
+                                  label: '0',
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xff7A8FA6)),
+                            ],
+                          ),
+                        ),
+                        Booster.verticalSpace(15),
+                      ],
+                    ),
+                  ),
+                  StreamProvider.value(
+                    value: _commentServices
+                        .streamPostComment(postModel.docId.toString()),
+                    initialData: [CommentModel()],
+                    builder: (context, child) {
+                      List<CommentModel> list =
+                          context.watch<List<CommentModel>>();
+                      return ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: list.length,
+                          itemBuilder: (context, i) {
+                            return StreamProvider.value(
+                              value: _talentServices
+                                  .fetchUserData(list[i].authorID.toString()),
+                              initialData: TalentModel(),
+                              builder: (context, child) {
+                                TalentModel talentModel =
+                                    context.watch<TalentModel>();
+                                return CommentTile(
+                                  commentModel: list[i],
+                                  talentModel: talentModel,
+                                );
+                              },
+                            );
+                          });
+                    },
+                  )
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  children: [
-                    Booster.verticalSpace(20),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15,right: 10),
-                      child: Row(
-                        children: [
-                          Icon(
-                            CupertinoIcons.heart_solid,
-                            color: Colors.red,
-                            size: 18,
-                          ),
-                          Booster.horizontalSpace(3),
-                          Booster.dynamicFontSize(
-                              label: '247',
-                              fontSize: 9,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xff7A8FA6)),
-                          Booster.horizontalSpace(15),
-                          ImageIcon(AssetImage('assets/images/Group 16131.png'),size: 15,color: Color(0xff7A8FA6)),
-                          Booster.horizontalSpace(3),
-                          Booster.dynamicFontSize(
-                              label: '57',
-                              fontSize: 9,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xff7A8FA6)),
-                          Booster.horizontalSpace(15),
-                          ImageIcon(AssetImage('assets/images/19.png'),size: 15,color: Color(0xff7A8FA6)),
-                          Booster.horizontalSpace(3),
-                          Booster.dynamicFontSize(
-                              label: '33',
-                              fontSize: 9,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xff7A8FA6)),
-                        ],
-                      ),
-                    ),
-                    Booster.verticalSpace(15),
-                  ],
-                ),
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                    color: Color(0xffF2F2F2),
-                  border: Border(
-                    top: BorderSide(width: 1, color: Color(0x4DD4D4D4)),
-                    bottom: BorderSide(width: 1, color: Color(0x4DD4D4D4)),
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 15),
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 20,
-                        backgroundImage: AssetImage('assets/images/person.jpg'),
-                      ),
-                      Booster.horizontalSpace(10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Booster.dynamicFontSize(
-                                  label: 'Michael Bruno',
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w700),
-                              Booster.dynamicFontSize(
-                                  label: '8h ago',
-                                  fontSize: 11,
-                                  color: Color(0xffACACAC),
-                                  fontWeight: FontWeight.w400),
-                            ],
-                          ),
-                          Booster.verticalSpace(5),
-                          Booster.dynamicFontSize(
-                              label: '#Photoshoot #Smile #Beautiful #Fashion',
-                              fontSize: 11,
-                              color: Color(0xff2FBBF0),
-                              fontWeight: FontWeight.w400),
-                          Booster.verticalSpace(5),
-                          Container(
-                            width: 250,
-                            child: Booster.dynamicFontSize(
-                                label: 'Cras gravida bibendum dolor eu varius. Ipsum fermentum velit nisl, eget vehicula.',
-                                fontSize: 11,
-                                isAlignCenter: false,
-                                lineHeight: 1.3,
-                                color: Color(0xff7A8FA6),
-                                fontWeight: FontWeight.w400),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                  border: Border(
-                    top: BorderSide(width: 1, color: Color(0x4DD4D4D4)),
-                    bottom: BorderSide(width: 1, color: Color(0x4DD4D4D4)),
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 15),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Column(
-                            children: [
-                              CircleAvatar(
-                                radius: 20,
-                                backgroundImage: AssetImage('assets/images/person.jpg'),
-                              ),
-                              Row(
-                                children: [
-                                  Icon(CupertinoIcons.heart_solid,color: Colors.red,size: 18,),
-                                  Booster.dynamicFontSize(
-                                      label: '19',
-                                      fontSize: 11,
-                                      color: Color(0xff7A8FA6),
-                                      fontWeight: FontWeight.w400),
-                                ],
-                              ),
-                            ],
-                          ),
-                          Booster.horizontalSpace(10),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Booster.dynamicFontSize(
-                                      label: 'Emma Stone',
-                                      fontSize: 15,
-                                      color: Color(0xff7A8FA6),
-                                      fontWeight: FontWeight.w700),
-                                  Booster.dynamicFontSize(
-                                      label: '8h ago',
-                                      fontSize: 11,
-                                      color: Color(0xffACACAC),
-                                      fontWeight: FontWeight.w400),
-                                ],
-                              ),
-                              Booster.verticalSpace(5),
-                              Container(
-                                width: 250,
-                                child: Booster.dynamicFontSize(
-                                    label: 'Wow! Just amazing. I love your profile content. Look forward to see more. Well done!',
-                                    fontSize: 11,
-                                    isAlignCenter: false,
-                                    lineHeight: 1.3,
-                                    color: Color(0xff7A8FA6),
-                                    fontWeight: FontWeight.w400),
-
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Icon(CupertinoIcons.heart_solid,color: Colors.red,size: 18,)
-                                ],
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                  border: Border(
-                    top: BorderSide(width: 1, color: Color(0x4DD4D4D4)),
-                    bottom: BorderSide(width: 1, color: Color(0x4DD4D4D4)),
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 15),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Column(
-                            children: [
-                              CircleAvatar(
-                                radius: 20,
-                                backgroundImage: AssetImage('assets/images/person.jpg'),
-                              ),
-                              Row(
-                                children: [
-                                  Icon(CupertinoIcons.heart_solid,  color: Color(0xff7A8FA6),size: 18,),
-                                  Booster.dynamicFontSize(
-                                      label: '19',
-                                      fontSize: 11,
-                                      color: Color(0xff7A8FA6),
-                                      fontWeight: FontWeight.w400),
-                                ],
-                              ),
-                            ],
-                          ),
-                          Booster.horizontalSpace(10),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Booster.dynamicFontSize(
-                                      label: 'Emma Stone',
-                                      fontSize: 15,
-                                      color: Color(0xff7A8FA6),
-                                      fontWeight: FontWeight.w700),
-                                  Booster.dynamicFontSize(
-                                      label: '8h ago',
-                                      fontSize: 11,
-                                      color: Color(0xffACACAC),
-                                      fontWeight: FontWeight.w400),
-                                ],
-                              ),
-                              Booster.verticalSpace(5),
-                              Container(
-                                width: 250,
-                                child: Booster.dynamicFontSize(
-                                    label: 'Rhoncus ipsum eget tempus. Praesent con fermentum sa  rhoncus ipsum eget tem Praesent.',
-                                    fontSize: 11,
-                                    isAlignCenter: false,
-                                    lineHeight: 1.3,
-                                    color: Color(0xff7A8FA6),
-                                    fontWeight: FontWeight.w400),
-
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Icon(CupertinoIcons.heart_solid,  color: Color(0xff7A8FA6),size: 18,)
-                                ],
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-            ],
+            ),
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                CircleAvatar(
+                  radius: 20,
+                  backgroundImage: AssetImage('assets/images/person.jpg'),
+                ),
+                Booster.horizontalSpace(10),
+                Expanded(
+                    child: AuthTextFieldSimple(
+                  label: 'Add a comment',
+                  number: 1,
+                  controller: _controller,
+                )),
+                Booster.horizontalSpace(10),
+                Container(
+                  // radius: 20,
+                  child: InkWell(
+                    onTap: () async {
+                      await _commentServices
+                          .addPostComment(CommentModel(
+                              postID: postModel.docId.toString(),
+                              authorID: 'zMhTR5obSmEw64x9zpmx',
+                              time: Timestamp.fromDate(DateTime.now()),
+                              comment: _controller.text))
+                          .then((value) {
+                        _controller.clear();
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(Icons.send),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
