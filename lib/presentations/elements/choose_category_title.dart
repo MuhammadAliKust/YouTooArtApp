@@ -12,19 +12,20 @@ class ChooseCategoryTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Container(
-          height: 22,
-          width: 24,
-          decoration: BoxDecoration(
-            boxShadow: FrontEndConfigs.boxShadow,
-            borderRadius: BorderRadius.circular(5),
+        InkWell(
+          onTap: () => onTap(),
+          child: Container(
+            height: 22,
+            width: 24,
+            decoration: BoxDecoration(
+              boxShadow: FrontEndConfigs.boxShadow,
+              borderRadius: BorderRadius.circular(5),
+            ),
           ),
         ),
         Booster.horizontalSpace(15),
         Booster.dynamicFontSize(
-            label: text,
-            fontSize: 15,
-            fontWeight: FontWeight.w400),
+            label: text, fontSize: 15, fontWeight: FontWeight.w400),
       ],
     );
   }

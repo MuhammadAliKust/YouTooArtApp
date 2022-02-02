@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:you_2_art/application/app_state.dart';
-import 'package:you_2_art/presentations/views/talent_view.dart';
+import 'package:you_2_art/presentations/views/login_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: TalentView(),
+      home: LoginView(),
     );
   }
 }
