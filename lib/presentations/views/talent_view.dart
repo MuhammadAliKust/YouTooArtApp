@@ -1,7 +1,6 @@
 import 'package:booster/booster.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:you_2_art/infrastrucuture/models/connection.dart';
 import 'package:you_2_art/infrastrucuture/services/connection.dart';
 import 'package:you_2_art/presentations/elements/auth_text_field_simple.dart';
 import 'package:you_2_art/presentations/elements/grid_view_widget_talent.dart';
@@ -18,12 +17,6 @@ class _TalentViewState extends State<TalentView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _connectionServices.addConnectionRequest(
-              ConnectionModel(userId: '1', otherId: '2', users: ['1', '2']));
-        },
-      ),
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,

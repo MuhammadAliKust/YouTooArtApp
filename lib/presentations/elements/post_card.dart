@@ -2,10 +2,14 @@ import 'package:booster/booster.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:you_2_art/application/date_formatter.dart';
+import 'package:you_2_art/application/user_provider.dart';
+import 'package:you_2_art/infrastrucuture/models/category.dart';
 import 'package:you_2_art/infrastrucuture/models/post.dart';
 import 'package:you_2_art/infrastrucuture/models/report.dart';
 import 'package:you_2_art/infrastrucuture/models/talent.dart';
+import 'package:you_2_art/infrastrucuture/services/category.dart';
 import 'package:you_2_art/infrastrucuture/services/post.dart';
 import 'package:you_2_art/infrastrucuture/services/report.dart';
 import 'package:you_2_art/presentations/elements/flush_bar.dart';
@@ -26,9 +30,11 @@ class PostCard extends StatelessWidget {
 
   PostServices _postServices = PostServices();
   ReportServices _reportServices = ReportServices();
+  CategoryServices _categoryServices = CategoryServices();
 
   @override
   Widget build(BuildContext context) {
+    var user = Provider.of<UserProvider>(context);
     return InkWell(
       onTap: () {
         Get.to(() => ActivityPost(postModel, commentLength));
@@ -53,22 +59,38 @@ class PostCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Booster.dynamicFontSize(
-                            label: talentModel.name.toString(),
+                            label: talentModel.firstName.toString() +
+                                " " +
+                                talentModel.lastName.toString(),
                             fontSize: 14,
                             fontWeight: FontWeight.w700),
                         Booster.verticalSpace(3),
-                        Booster.dynamicFontSize(
-                            label: talentModel.categories
-                                .toString()
-                                .replaceAll(']', '')
-                                .replaceAll('[', ''),
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                            color: Color(0xff989898)),
+                        Row(
+                          children: [
+                            ...talentModel.categories!.map((e) {
+                              return StreamProvider.value(
+                                value: _categoryServices.streamCategoryByID(e),
+                                initialData: CategoryModel(),
+                                builder: (context, child) {
+                                  return Booster.dynamicFontSize(
+                                      label: " #" +
+                                          context
+                                              .watch<CategoryModel>()
+                                              .categoryName
+                                              .toString(),
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                      color: Color(0xff989898));
+                                },
+                              );
+                            }).toList(),
+                          ],
+                        )
                       ],
                     )
                   ],
                 ),
+                if(user.getUserDetails()!.docID.toString() == postModel.authorId.toString())
                 PopupMenuButton(
                     iconSize: 16,
                     onSelected: (value) {
@@ -144,13 +166,17 @@ class PostCard extends StatelessWidget {
                   children: [
                     InkWell(
                       onTap: () {
-                        if (!postModel.likers!.contains('1'))
+                        if (!postModel.likers!
+                            .contains(user.getUserDetails()!.docID.toString()))
                           _postServices.incrementPostCounter(
-                              postID: postModel.docId.toString(), likerID: '1');
+                              postID: postModel.docId.toString(),
+                              likerID:
+                                  (user.getUserDetails()!.docID.toString()));
                       },
                       child: Icon(
                         CupertinoIcons.heart_solid,
-                        color: postModel.likers!.contains('1')
+                        color: postModel.likers!.contains(
+                                (user.getUserDetails()!.docID.toString()))
                             ? Colors.red
                             : Color(0xff7A8FA6),
                         size: 18,

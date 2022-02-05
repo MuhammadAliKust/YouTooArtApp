@@ -1,14 +1,19 @@
 import 'package:booster/booster.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:you_2_art/application/date_formatter.dart';
+import 'package:you_2_art/infrastrucuture/models/category.dart';
 import 'package:you_2_art/infrastrucuture/models/comment.dart';
 import 'package:you_2_art/infrastrucuture/models/talent.dart';
+import 'package:you_2_art/infrastrucuture/services/category.dart';
 
 class CommentTile extends StatelessWidget {
   final TalentModel talentModel;
   final CommentModel commentModel;
 
   CommentTile({required this.talentModel, required this.commentModel});
+
+  CategoryServices _categoryServices = CategoryServices();
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +42,9 @@ class CommentTile extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Booster.dynamicFontSize(
-                        label: talentModel.name.toString(),
+                        label: talentModel.firstName.toString() +
+                            " " +
+                            talentModel.lastName.toString(),
                         fontSize: 18,
                         fontWeight: FontWeight.w700),
                     Booster.horizontalSpace(20),
@@ -50,14 +57,27 @@ class CommentTile extends StatelessWidget {
                   ],
                 ),
                 Booster.verticalSpace(3),
-                Booster.dynamicFontSize(
-                    label: talentModel.categories
-                        .toString()
-                        .replaceAll(']', '')
-                        .replaceAll('[', ''),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.blue),
+                Row(
+                  children: [
+                    ...talentModel.categories!.map((e) {
+                      return StreamProvider.value(
+                        value: _categoryServices.streamCategoryByID(e),
+                        initialData: CategoryModel(),
+                        builder: (context, child) {
+                          return Booster.dynamicFontSize(
+                              label: " #" +
+                                  context
+                                      .watch<CategoryModel>()
+                                      .categoryName
+                                      .toString(),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: Color(0xff989898));
+                        },
+                      );
+                    }).toList(),
+                  ],
+                ),
                 Booster.verticalSpace(5),
                 Container(
                   width: 250,

@@ -18,4 +18,14 @@ class CategoryServices {
         .map((event) =>
             event.docs.map((e) => CategoryModel.fromJson(e.data())).toList());
   }
+
+  ///Stream Category By ID
+  Stream<CategoryModel> streamCategoryByID(String categoryID) {
+    return FirebaseFirestore.instance
+        .collection('categoriesCollection')
+        .doc(categoryID)
+        .snapshots()
+        .map((event) => CategoryModel.fromJson(event.data()!));
+
+  }
 }

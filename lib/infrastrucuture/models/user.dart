@@ -19,6 +19,8 @@ class UserModel {
     this.state,
     this.shortBio,
     this.phoneNumber,
+    this.posts,
+    this.connect,
     this.docID,
   });
 
@@ -31,6 +33,8 @@ class UserModel {
   String? state;
   String? shortBio;
   String? phoneNumber;
+  int? connect;
+  int? posts;
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
         categories: List<String>.from(json["categories"].map((x) => x)),
@@ -42,6 +46,8 @@ class UserModel {
         state: json["state"],
         shortBio: json["shortBio"],
         phoneNumber: json["phoneNumber"],
+        posts: json["posts"],
+        connect: json["connect"],
       );
 
   Map<String, dynamic> toJson(String docID) => {
@@ -54,5 +60,7 @@ class UserModel {
         "state": state,
         "shortBio": shortBio,
         "phoneNumber": phoneNumber,
+        "connect": connect,
+        "posts": posts,
       };
 }

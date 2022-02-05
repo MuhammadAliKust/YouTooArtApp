@@ -11,7 +11,14 @@ class UserProfileContainer1 extends StatelessWidget {
   final String image;
   final VoidCallback onTap;
 
-  UserProfileContainer1({required this.onTap, required this.name, required this.skills, required this.area, required this.contactno, required this.postsno, required this.image});
+  UserProfileContainer1(
+      {required this.onTap,
+      required this.name,
+      required this.skills,
+      required this.area,
+      required this.contactno,
+      required this.postsno,
+      required this.image});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +26,7 @@ class UserProfileContainer1 extends StatelessWidget {
       children: [
         CircleAvatar(
           radius: 40,
-          backgroundImage: AssetImage(image),
+          backgroundImage: NetworkImage(image),
         ),
         Booster.horizontalSpace(15),
         Column(
@@ -28,9 +35,7 @@ class UserProfileContainer1 extends StatelessWidget {
             Row(
               children: [
                 Booster.dynamicFontSize(
-                    label: name,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700),
+                    label: name, fontSize: 18, fontWeight: FontWeight.w700),
                 Booster.horizontalSpace(5),
                 Icon(
                   CupertinoIcons.check_mark_circled_solid,
@@ -64,13 +69,9 @@ class UserProfileContainer1 extends StatelessWidget {
                     fontWeight: FontWeight.w700),
                 Booster.horizontalSpace(15),
                 Booster.dynamicFontSize(
-                    label: postsno,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700),
+                    label: postsno, fontSize: 13, fontWeight: FontWeight.w700),
                 Booster.dynamicFontSize(
-                    label: 'Posts',
-                    fontSize: 9,
-                    fontWeight: FontWeight.w700),
+                    label: 'Posts', fontSize: 9, fontWeight: FontWeight.w700),
               ],
             )
           ],

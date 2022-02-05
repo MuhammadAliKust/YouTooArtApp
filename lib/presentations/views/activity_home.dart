@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:you_2_art/application/user_provider.dart';
+import 'package:you_2_art/configs/front_end_configs.dart';
 import 'package:you_2_art/infrastrucuture/models/comment.dart';
 import 'package:you_2_art/infrastrucuture/models/post.dart';
 import 'package:you_2_art/infrastrucuture/models/talent.dart';
@@ -21,9 +23,12 @@ class ActivityHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var user = Provider.of<UserProvider>(context);
     return Scaffold(
         backgroundColor: Colors.white,
         floatingActionButton: FloatingActionButton(
+          backgroundColor: FrontEndConfigs.kPrimaryColor,
+          child: Icon(Icons.add, color: Colors.white),
           onPressed: () {
             Get.to(() =>
                 CreatePostView(postModel: PostModel(), isUpdateMode: false));
@@ -76,7 +81,8 @@ class ActivityHome extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 35,
-                    backgroundImage: AssetImage('assets/images/person.jpg'),
+                    backgroundImage:
+                        NetworkImage(user.getUserDetails()!.image.toString()),
                   ),
                   Booster.horizontalSpace(15),
                   Expanded(
@@ -120,9 +126,10 @@ class ActivityHome extends StatelessWidget {
                                     builder: (context, child) {
                                       TalentModel userModel =
                                           context.watch<TalentModel>();
+
                                       return list[i].docId == null ||
                                               userModel.image == null
-                                          ? CircularProgressIndicator()
+                                          ? Container()
                                           : PostCard(
                                               talentModel: userModel,
                                               commentLength: commentList.length,

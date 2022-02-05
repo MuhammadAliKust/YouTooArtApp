@@ -1,13 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:you_2_art/infrastrucuture/models/talent.dart';
+import 'package:you_2_art/infrastrucuture/models/user.dart';
 
 class UserProvider extends ChangeNotifier {
-  TalentModel? _userModel;
+  UserModel? _userModel;
 
-  void saveUserDetails(TalentModel? userModel) {
+  void saveUserDetails(UserModel? userModel) {
     _userModel = userModel;
     notifyListeners();
   }
 
-  TalentModel? getUserDetails() => _userModel;
+  UserModel? getUserDetails() => _userModel;
 }

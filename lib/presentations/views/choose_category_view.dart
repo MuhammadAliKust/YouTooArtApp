@@ -7,6 +7,7 @@ import 'package:you_2_art/infrastrucuture/models/category.dart';
 import 'package:you_2_art/infrastrucuture/services/category.dart';
 import 'package:you_2_art/presentations/elements/app_button_short.dart';
 import 'package:you_2_art/presentations/elements/choose_category_title.dart';
+import 'package:you_2_art/presentations/elements/flush_bar.dart';
 import 'package:you_2_art/presentations/views/create_profile.dart';
 
 class ChooseCategory extends StatefulWidget {
@@ -59,68 +60,39 @@ class _ChooseCategoryState extends State<ChooseCategory> {
                           return Column(
                             children: [
                               ChooseCategoryTile(
-                                  onTap: () {
+                                onTap: () {
+                                  if (_selectedCategories.contains(
+                                      categoryList[i].docId.toString())) {
+                                    _selectedCategories.remove(
+                                        categoryList[i].docId.toString());
+                                  } else {
                                     _selectedCategories
                                         .add(categoryList[i].docId.toString());
-                                    setState(() {});
-                                  },
-                                  text:
-                                      categoryList[i].categoryName.toString()),
+                                  }
+
+                                  setState(() {});
+                                },
+                                text: categoryList[i].categoryName.toString(),
+                                isSelected: _selectedCategories
+                                    .contains(categoryList[i].docId.toString()),
+                              ),
                               Booster.verticalSpace(25),
                             ],
                           );
                         });
                   },
                 ),
-                // ChooseCategoryTile(onTap: () {}, text: 'Cameraperson'),
-                // Booster.verticalSpace(25),
-                // ChooseCategoryTile(onTap: () {}, text: 'Dance & Choreography'),
-                // Booster.verticalSpace(25),
-                // ChooseCategoryTile(onTap: () {}, text: 'Director'),
-                // Booster.verticalSpace(25),
-                // ChooseCategoryTile(onTap: () {}, text: 'Dubbing Artist '),
-                // Booster.verticalSpace(25),
-                // ChooseCategoryTile(onTap: () {}, text: 'Editor'),
-                // Booster.verticalSpace(25),
-                // ChooseCategoryTile(onTap: () {}, text: 'Fashion Designer'),
-                // Booster.verticalSpace(25),
-                // ChooseCategoryTile(onTap: () {}, text: 'Film Promotion'),
-                // Booster.verticalSpace(25),
-                // ChooseCategoryTile(onTap: () {}, text: 'Hand Crafting'),
-                // Booster.verticalSpace(25),
-                // ChooseCategoryTile(onTap: () {}, text: 'Interior Design'),
-                // Booster.verticalSpace(25),
-                // ChooseCategoryTile(onTap: () {}, text: 'Locations'),
-                // Booster.verticalSpace(25),
-                // ChooseCategoryTile(onTap: () {}, text: 'Makeup Artist'),
-                // Booster.verticalSpace(25),
-                // ChooseCategoryTile(onTap: () {}, text: 'Meme Creator'),
-                // Booster.verticalSpace(25),
-                // ChooseCategoryTile(onTap: () {}, text: 'Movie Buff / Reviewer'),
-                // Booster.verticalSpace(25),
-                // ChooseCategoryTile(onTap: () {}, text: 'Music Director'),
-                // Booster.verticalSpace(25),
-                // ChooseCategoryTile(onTap: () {}, text: 'Painter'),
-                // Booster.verticalSpace(25),
-                // ChooseCategoryTile(onTap: () {}, text: 'Producer'),
-                // Booster.verticalSpace(25),
-                // ChooseCategoryTile(onTap: () {}, text: 'Singer'),
-                // Booster.verticalSpace(25),
-                // ChooseCategoryTile(onTap: () {}, text: 'Standup Comedy'),
-                // Booster.verticalSpace(25),
-                // ChooseCategoryTile(onTap: () {}, text: 'Story Tellling'),
-                // Booster.verticalSpace(25),
-                // ChooseCategoryTile(onTap: () {}, text: 'Technician'),
-                // Booster.verticalSpace(25),
-                // ChooseCategoryTile(onTap: () {}, text: 'VFX'),
-                // Booster.verticalSpace(25),
-                // ChooseCategoryTile(onTap: () {}, text: 'Writer'),
                 Booster.verticalSpace(15),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     AppButtonShort(
                         onTap: () {
+                          if (_selectedCategories.isEmpty) {
+                            getFlushBar(context,
+                                title: 'Kindly select at least one category.');
+                            return;
+                          }
                           Get.to(() => CreateProfile(
                                 categoryList: _selectedCategories,
                                 number: widget.number,

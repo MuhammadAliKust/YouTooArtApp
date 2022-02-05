@@ -12,11 +12,22 @@ class UserServices {
   }
 
   ///Stream Specific User
-  Stream<TalentModel> fetchUserData(String docID) {
+  Stream<UserModel> fetchUserData(String docID) {
     return FirebaseFirestore.instance
         .collection('talentUsersCollection')
         .doc(docID)
         .snapshots()
-        .map((event) => TalentModel.fromJson(event.data()!));
+        .map((event) => UserModel.fromJson(event.data()!));
+  }
+
+  ///Check if User Exists
+  Stream<List<UserModel>> checkUserExists(String number) {
+    print(number);
+    return FirebaseFirestore.instance
+        .collection('talentUsersCollection')
+        .where('phoneNumber', isEqualTo: number)
+        .snapshots()
+        .map((event) =>
+            event.docs.map((e) => UserModel.fromJson(e.data())).toList());
   }
 }

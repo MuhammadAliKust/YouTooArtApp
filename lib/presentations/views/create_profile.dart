@@ -14,6 +14,7 @@ import 'package:you_2_art/infrastrucuture/services/user.dart';
 import 'package:you_2_art/presentations/elements/app_button_shadow.dart';
 import 'package:you_2_art/presentations/elements/app_button_short.dart';
 import 'package:you_2_art/presentations/elements/auth_text_field.dart';
+import 'package:you_2_art/presentations/elements/flush_bar.dart';
 import 'package:you_2_art/presentations/elements/navigation_dialog.dart';
 
 class CreateProfile extends StatefulWidget {
@@ -113,12 +114,18 @@ class _CreateProfileState extends State<CreateProfile> {
                       children: [
                         Expanded(
                             child: AuthTextFieldBorder(
+                                validator: (val) => val.isEmpty
+                                    ? "Field cannot be empty"
+                                    : null,
                                 controller: _firstNameController,
                                 label: 'First Name',
                                 number: 1)),
                         Booster.horizontalSpace(10),
                         Expanded(
                             child: AuthTextFieldBorder(
+                                validator: (val) => val.isEmpty
+                                    ? "Field cannot be empty"
+                                    : null,
                                 controller: _lastNameController,
                                 label: 'Last Name',
                                 number: 1)),
@@ -129,12 +136,18 @@ class _CreateProfileState extends State<CreateProfile> {
                       children: [
                         Expanded(
                             child: AuthTextFieldBorder(
+                                validator: (val) => val.isEmpty
+                                    ? "Field cannot be empty"
+                                    : null,
                                 controller: _cityController,
                                 label: 'City',
                                 number: 1)),
                         Booster.horizontalSpace(10),
                         Expanded(
                             child: AuthTextFieldBorder(
+                                validator: (val) => val.isEmpty
+                                    ? "Field cannot be empty"
+                                    : null,
                                 controller: _stateController,
                                 label: 'State',
                                 number: 1)),
@@ -152,6 +165,8 @@ class _CreateProfileState extends State<CreateProfile> {
                     ),
                     Booster.verticalSpace(30),
                     AuthTextFieldBorder(
+                        validator: (val) =>
+                            val.isEmpty ? "Field cannot be empty" : null,
                         controller: _shortBioController,
                         label:
                             'Ex. Software engineer by week,script writer by weekend.',
@@ -162,6 +177,11 @@ class _CreateProfileState extends State<CreateProfile> {
                       children: [
                         AppButtonShort(
                             onTap: () {
+                              if (_image == null) {
+                                getFlushBar(context,
+                                    title: "Kindly select profile image.");
+                                return;
+                              }
                               if (!_formKey.currentState!.validate()) {
                                 return;
                               }
@@ -170,7 +190,8 @@ class _CreateProfileState extends State<CreateProfile> {
                             text: 'Done',
                             color: FrontEndConfigs.kPrimaryColor),
                       ],
-                    )
+                    ),
+                    Booster.verticalSpace(20),
                   ],
                 ),
               ),

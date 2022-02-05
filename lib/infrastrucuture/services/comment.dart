@@ -6,6 +6,7 @@ class CommentServices {
   Stream<List<CommentModel>> streamPostComment(String postID) {
     return FirebaseFirestore.instance
         .collection('commentCollection')
+
         .where('postID', isEqualTo: postID)
         .orderBy('time', descending: true)
         .snapshots()

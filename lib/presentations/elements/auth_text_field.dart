@@ -6,9 +6,13 @@ class AuthTextFieldBorder extends StatelessWidget {
   final String label;
   final int number;
   final TextEditingController controller;
+  final Function(String) validator;
 
   AuthTextFieldBorder(
-      {required this.label, required this.number, required this.controller});
+      {required this.label,
+      required this.number,
+      required this.controller,
+      required this.validator});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +22,8 @@ class AuthTextFieldBorder extends StatelessWidget {
           borderRadius: BorderRadius.circular(25),
         ),
         width: MediaQuery.of(context).size.width,
-        child: TextField(
+        child: TextFormField(
+          validator: (val) => validator(val!),
           controller: controller,
           style: TextStyle(
             color: Colors.black,

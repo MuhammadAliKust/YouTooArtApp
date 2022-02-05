@@ -1,11 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
+import 'package:you_2_art/application/user_provider.dart';
 import 'package:you_2_art/infrastrucuture/models/talent.dart';
 
 class TalentServices {
   ///Stream All Talent
-  Stream<List<TalentModel>> streamAllUsers() {
+  Stream<List<TalentModel>> streamAllUsers(BuildContext context) {
+    var user = Provider.of<UserProvider>(context);
     return FirebaseFirestore.instance
         .collection('talentUsersCollection')
+        // .where('docID', isNotEqualTo: user.getUserDetails()!.docID.toString())
         .snapshots()
         .map((event) =>
             event.docs.map((e) => TalentModel.fromJson(e.data())).toList());

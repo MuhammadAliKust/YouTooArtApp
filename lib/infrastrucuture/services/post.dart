@@ -17,6 +17,7 @@ class PostServices {
   Stream<List<PostModel>> streamAllPosts() {
     return FirebaseFirestore.instance
         .collection('talentPostCollection')
+        .orderBy('time', descending: true)
         .snapshots()
         .map((event) => event.docs
             .map((e) => PostModel.fromJson(e.data() as Map<String, dynamic>))
@@ -25,9 +26,9 @@ class PostServices {
 
   ///Add Post
   Future addPost(PostModel postModel) async {
-    return await FirebaseFirestore.instance
-        .collection('talentPostCollection')
-        .add(postModel.toJson(postModel.docId.toString()));
+    DocumentReference _docRef =
+        FirebaseFirestore.instance.collection('talentPostCollection').doc();
+    return await _docRef.set(postModel.toJson(_docRef.id.toString()));
   }
 
   ///Update Post

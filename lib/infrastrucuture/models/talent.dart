@@ -14,30 +14,34 @@ class TalentModel {
   TalentModel({
     this.docId,
     this.image,
-    this.name,
+    this.firstName,
     this.categories,
-    this.location,
+    this.city,
+    this.lastName,
   });
 
   String? docId;
   String? image;
-  String? name;
+  String? lastName;
+  String? firstName;
   List<String>? categories;
-  String? location;
+  String? city;
 
   factory TalentModel.fromJson(Map<String, dynamic> json) => TalentModel(
         docId: json["docID"],
         image: json["image"],
-        name: json["name"],
+        firstName: json["firstName"],
         categories: List<String>.from(json["categories"].map((x) => x)),
-        location: json["location"],
+        city: json["city"],
+        lastName: json["lastName"],
       );
 
   Map<String, dynamic> toJson(String docID) => {
         "docID": docID,
         "image": image,
-        "name": name,
+        "firstName": firstName,
         "categories": List<dynamic>.from(categories!.map((x) => x)),
-        "location": location,
+        "city": city,
+        "lastName": lastName,
       };
 }

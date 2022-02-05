@@ -20,7 +20,7 @@ class AppButtonIcon extends StatelessWidget {
     return Container(
       height: 50,
       child: TextButton(
-        child: Center(child: Icon(Icons,color: Colors.black,)),
+        child: Center(child: Icon(Icons,color: textcolor,)),
         style: TextButton.styleFrom(
           primary: Colors.white,
           backgroundColor: backgroundcolor,
@@ -31,7 +31,7 @@ class AppButtonIcon extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
           ),
         ),
-        onPressed: () {},
+        onPressed: () =>onTap(),
       ),
     );
   }
