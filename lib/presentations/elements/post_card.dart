@@ -90,47 +90,71 @@ class PostCard extends StatelessWidget {
                     )
                   ],
                 ),
-                if(user.getUserDetails()!.docID.toString() == postModel.authorId.toString())
-                PopupMenuButton(
-                    iconSize: 16,
-                    onSelected: (value) {
-                      if (value == 2) {
-                        showNavigationDialog(context,
-                            message: "Do you really want to delete this video?",
-                            buttonText: "Yes", navigation: () {
-                          _postServices.deletePost(postModel.docId.toString());
-                          Navigator.pop(context);
-                        }, secondButtonText: "No", showSecondButton: true);
-                      } else if (value == 1) {
-                        Get.to(() => CreatePostView(
-                              postModel: postModel,
-                              isUpdateMode: true,
-                            ));
-                      } else if (value == 3) {
-                        _reportServices
-                            .addReport(ReportModel(
-                                authorId: '1',
-                                postId: postModel.docId.toString()))
-                            .then((value) {
-                          getFlushBar(context,
-                              title: 'Post has been reported successfully.');
-                        });
-                      }
-                    },
-                    itemBuilder: (context) => [
-                          PopupMenuItem(
-                            child: Text("Update"),
-                            value: 1,
-                          ),
-                          PopupMenuItem(
-                            child: Text("Delete"),
-                            value: 2,
-                          ),
-                          PopupMenuItem(
-                            child: Text("Report"),
-                            value: 3,
-                          ),
-                        ])
+                // Text(postModel.postBody.toString()),
+                if (user.getUserDetails()!.docID.toString() ==
+                    postModel.authorId.toString())
+                  PopupMenuButton(
+                      iconSize: 16,
+                      onSelected: (value) {
+                        if (value == 2) {
+                          showNavigationDialog(context,
+                              message:
+                                  "Do you really want to delete this video?",
+                              buttonText: "Yes", navigation: () {
+                            _postServices
+                                .deletePost(postModel.docId.toString());
+                            Navigator.pop(context);
+                          }, secondButtonText: "No", showSecondButton: true);
+                        } else if (value == 1) {
+                          Get.to(() => CreatePostView(
+                                postModel: postModel,
+                                isUpdateMode: true,
+                              ));
+                        }
+                        // else if (value == 3) {
+                        //   _reportServices
+                        //       .addReport(ReportModel(
+                        //           authorId: '1',
+                        //           postId: postModel.docId.toString()))
+                        //       .then((value) {
+                        //     getFlushBar(context,
+                        //         title: 'Post has been reported successfully.');
+                        //   });
+                        // }
+                      },
+                      itemBuilder: (context) => [
+                            PopupMenuItem(
+                              child: Text("Update"),
+                              value: 1,
+                            ),
+                            PopupMenuItem(
+                              child: Text("Delete"),
+                              value: 2,
+                            ),
+                          ]),
+                if (user.getUserDetails()!.docID.toString() !=
+                    postModel.authorId.toString())
+                  PopupMenuButton(
+                      iconSize: 16,
+                      onSelected: (value) {
+                        if (value == 1) {
+                          _reportServices
+                              .addReport(ReportModel(
+                                  authorId:
+                                      user.getUserDetails()!.docID.toString(),
+                                  postId: postModel.docId.toString()))
+                              .then((value) {
+                            getFlushBar(context,
+                                title: 'Post has been reported successfully.');
+                          });
+                        }
+                      },
+                      itemBuilder: (context) => [
+                            PopupMenuItem(
+                              child: Text("Report"),
+                              value: 1,
+                            ),
+                          ])
               ],
             ),
           ),

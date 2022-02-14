@@ -1,10 +1,13 @@
 import 'package:booster/booster.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:you_2_art/infrastrucuture/models/category.dart';
+import 'package:you_2_art/infrastrucuture/services/category.dart';
 
 class UserProfileContainer1 extends StatelessWidget {
   final String name;
-  final String skills;
+  final List<String> skills;
   final String area;
   final String contactno;
   final String postsno;
@@ -19,7 +22,7 @@ class UserProfileContainer1 extends StatelessWidget {
       required this.contactno,
       required this.postsno,
       required this.image});
-
+  CategoryServices _categoryServices = CategoryServices();
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -45,11 +48,27 @@ class UserProfileContainer1 extends StatelessWidget {
               ],
             ),
             Booster.verticalSpace(3),
-            Booster.dynamicFontSize(
-                label: skills,
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: Color(0xff7A8FA6)),
+            Row(
+              children: [
+                ...skills.map((e) {
+                  return StreamProvider.value(
+                    value: _categoryServices.streamCategoryByID(e),
+                    initialData: CategoryModel(),
+                    builder: (context, child) {
+                      return Booster.dynamicFontSize(
+                          label: " #" +
+                              context
+                                  .watch<CategoryModel>()
+                                  .categoryName
+                                  .toString(),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xff989898));
+                    },
+                  );
+                }).toList(),
+              ],
+            ),
             Booster.verticalSpace(7),
             Booster.dynamicFontSize(
                 label: area,

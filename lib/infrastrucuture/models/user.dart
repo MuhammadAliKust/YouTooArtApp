@@ -10,22 +10,28 @@ String userModelToJson(UserModel data) =>
     json.encode(data.toJson(data.docID.toString()));
 
 class UserModel {
-  UserModel({
-    this.categories,
-    this.image,
-    this.firstName,
-    this.lastName,
-    this.city,
-    this.state,
-    this.shortBio,
-    this.phoneNumber,
-    this.posts,
-    this.connect,
-    this.docID,
-  });
+  UserModel(
+      {this.categories,
+      this.image,
+      this.firstName,
+      this.lastName,
+      this.city,
+      this.state,
+      this.shortBio,
+      this.phoneNumber,
+      this.posts,
+      this.connect,
+      this.docID,
+      this.image1,
+      this.image2,
+      this.image3});
 
   List<String>? categories;
+
   String? image;
+  String? image1;
+  String? image2;
+  String? image3;
   String? docID;
   String? firstName;
   String? lastName;
@@ -39,6 +45,9 @@ class UserModel {
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
         categories: List<String>.from(json["categories"].map((x) => x)),
         image: json["image"],
+        image1: json["image1"],
+        image2: json["image2"],
+        image3: json["image3"],
         firstName: json["firstName"],
         lastName: json["lastName"],
         docID: json["docID"],
@@ -53,6 +62,9 @@ class UserModel {
   Map<String, dynamic> toJson(String docID) => {
         "categories": List<dynamic>.from(categories!.map((x) => x)),
         "image": image,
+        "image1": image1,
+        "image2": image2,
+        "image3": image3,
         "firstName": firstName,
         "docID": docID,
         "lastName": lastName,
@@ -60,7 +72,7 @@ class UserModel {
         "state": state,
         "shortBio": shortBio,
         "phoneNumber": phoneNumber,
-        "connect": connect,
-        "posts": posts,
+        "connect": 0,
+        "posts": 0,
       };
 }

@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:you_2_art/configs/front_end_configs.dart';
 
 class AuthTextFieldSimple extends StatelessWidget {
   final String label;
   final int number;
   final TextEditingController controller;
+  final Function(String)? onChanged;
 
-  AuthTextFieldSimple({required this.label, required this.number, required this.controller});
+  AuthTextFieldSimple(
+      {required this.label,
+      required this.number,
+      required this.controller,
+      this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +21,8 @@ class AuthTextFieldSimple extends StatelessWidget {
             borderRadius: BorderRadius.circular(32), color: Color(0xffF2F2F2)),
         width: MediaQuery.of(context).size.width,
         child: TextField(
-          controller:controller ,
+          controller: controller,
+          onChanged: onChanged,
           style: TextStyle(
               color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600),
           decoration: InputDecoration(

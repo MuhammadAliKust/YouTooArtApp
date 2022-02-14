@@ -1,27 +1,24 @@
 import 'package:booster/booster.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:you_2_art/application/user_provider.dart';
 import 'package:you_2_art/configs/front_end_configs.dart';
-import 'package:you_2_art/infrastrucuture/models/post.dart';
+import 'package:you_2_art/infrastrucuture/models/user.dart';
 import 'package:you_2_art/presentations/elements/app_button_shadow_1.dart';
 import 'package:you_2_art/presentations/elements/user_profile_container_1.dart';
 import 'package:you_2_art/presentations/views/my_posts.dart';
 
-import 'create_post.dart';
+class OtherUserProfileView extends StatefulWidget {
+  final UserModel userModel;
 
-class UserProfile extends StatefulWidget {
-  final bool fromLogin;
-
-  UserProfile(this.fromLogin);
+  OtherUserProfileView(this.userModel);
 
   @override
-  _UserProfileState createState() => _UserProfileState();
+  _OtherUserProfileViewState createState() => _OtherUserProfileViewState();
 }
 
-class _UserProfileState extends State<UserProfile> {
+class _OtherUserProfileViewState extends State<OtherUserProfileView> {
   bool isProfileSelected = true;
 
   @override
@@ -29,16 +26,6 @@ class _UserProfileState extends State<UserProfile> {
     var user = Provider.of<UserProvider>(context);
     return Scaffold(
       backgroundColor: Colors.white,
-      floatingActionButton: isProfileSelected
-          ? null
-          : FloatingActionButton(
-              backgroundColor: FrontEndConfigs.kPrimaryColor,
-              child: Icon(Icons.add, color: Colors.white),
-              onPressed: () {
-                Get.to(() => CreatePostView(
-                    postModel: PostModel(), isUpdateMode: false));
-              },
-            ),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -86,38 +73,38 @@ class _UserProfileState extends State<UserProfile> {
             children: [
               UserProfileContainer1(
                   onTap: () {},
-                  name: user.getUserDetails()!.firstName.toString() +
+                  name: widget.userModel.firstName.toString() +
                       " " +
-                      user.getUserDetails()!.lastName.toString(),
-                  skills: user.getUserDetails()!.categories!,
-                  area: user.getUserDetails()!.city.toString() +
+                      widget.userModel.lastName.toString(),
+                  skills: widget.userModel.categories!,
+                  area: widget.userModel.city.toString() +
                       " " +
-                      user.getUserDetails()!.state.toString(),
-                  contactno: user.getUserDetails()!.connect.toString(),
-                  postsno: user.getUserDetails()!.posts.toString(),
-                  image: user.getUserDetails()!.image.toString()),
+                      widget.userModel.state.toString(),
+                  contactno: widget.userModel.connect.toString(),
+                  postsno: widget.userModel.posts.toString(),
+                  image: widget.userModel.image.toString()),
               Booster.verticalSpace(3),
-              if (!widget.fromLogin)
-                Padding(
-                  padding: const EdgeInsets.only(left: 97),
-                  child: Row(
-                    children: [
-                      AppButtonLarge1(
-                          onTap: () {},
-                          text: 'Connect',
-                          backgroundcolor: Colors.white,
-                          shadowcolor: Color(0xffF1F1F1),
-                          textcolor: Colors.black),
-                      Booster.horizontalSpace(10),
-                      AppButtonLarge1(
-                          onTap: () {},
-                          text: 'Message',
-                          backgroundcolor: Colors.white,
-                          shadowcolor: Color(0xffF1F1F1),
-                          textcolor: Colors.black),
-                    ],
-                  ),
+
+              Padding(
+                padding: const EdgeInsets.only(left: 97),
+                child: Row(
+                  children: [
+                    AppButtonLarge1(
+                        onTap: () {},
+                        text: 'Connect',
+                        backgroundcolor: Colors.white,
+                        shadowcolor: Color(0xffF1F1F1),
+                        textcolor: Colors.black),
+                    Booster.horizontalSpace(10),
+                    AppButtonLarge1(
+                        onTap: () {},
+                        text: 'Message',
+                        backgroundcolor: Colors.white,
+                        shadowcolor: Color(0xffF1F1F1),
+                        textcolor: Colors.black),
+                  ],
                 ),
+              ),
               Booster.verticalSpace(10),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -173,11 +160,12 @@ class _UserProfileState extends State<UserProfile> {
                 ],
               ),
               Booster.verticalSpace(20),
-              if (!isProfileSelected) MyPostsView(),
+              if (!isProfileSelected)
+                MyPostsView(userID: widget.userModel.docID.toString()),
               if (isProfileSelected)
                 Booster.dynamicFontSize(
                     fontFamily: 'Raleway',
-                    label: user.getUserDetails()!.shortBio.toString(),
+                    label: widget.userModel.shortBio.toString(),
                     fontSize: 14,
                     lineHeight: 1.2,
                     fontWeight: FontWeight.w400),
@@ -187,7 +175,7 @@ class _UserProfileState extends State<UserProfile> {
                   children: [
                     Column(
                       children: [
-                        if (user.getUserDetails()!.image1 == null)
+                        if (widget.userModel.image1 == null)
                           Container(
                             height: 108,
                             width: 108,
@@ -198,7 +186,7 @@ class _UserProfileState extends State<UserProfile> {
                                   image: AssetImage('assets/images/post.png'),
                                 )),
                           ),
-                        if (user.getUserDetails()!.image1 != null)
+                        if (widget.userModel.image1 != null)
                           Container(
                             height: 108,
                             width: 108,
@@ -207,11 +195,11 @@ class _UserProfileState extends State<UserProfile> {
                                 image: DecorationImage(
                                   fit: BoxFit.fill,
                                   image: NetworkImage(
-                                      user.getUserDetails()!.image1.toString()),
+                                      widget.userModel.image1.toString()),
                                 )),
                           ),
                         Booster.verticalSpace(10),
-                        if (user.getUserDetails()!.image2 == null)
+                        if (widget.userModel.image2 == null)
                           Container(
                             height: 108,
                             width: 108,
@@ -222,7 +210,7 @@ class _UserProfileState extends State<UserProfile> {
                                   image: AssetImage('assets/images/post.png'),
                                 )),
                           ),
-                        if (user.getUserDetails()!.image1 != null)
+                        if (widget.userModel.image2 != null)
                           Container(
                             height: 108,
                             width: 108,
@@ -231,13 +219,13 @@ class _UserProfileState extends State<UserProfile> {
                                 image: DecorationImage(
                                   fit: BoxFit.fill,
                                   image: NetworkImage(
-                                      user.getUserDetails()!.image2.toString()),
+                                      widget.userModel.image2.toString()),
                                 )),
                           ),
                       ],
                     ),
                     Booster.horizontalSpace(10),
-                    if (user.getUserDetails()!.image3 == null)
+                    if (widget.userModel.image3 == null)
                       Expanded(
                         child: Container(
                           height: 225,
@@ -249,7 +237,7 @@ class _UserProfileState extends State<UserProfile> {
                               )),
                         ),
                       ),
-                    if (user.getUserDetails()!.image3 != null)
+                    if (widget.userModel.image3 != null)
                       Expanded(
                         child: Container(
                           height: 225,
@@ -258,7 +246,7 @@ class _UserProfileState extends State<UserProfile> {
                               image: DecorationImage(
                                 fit: BoxFit.fill,
                                 image: NetworkImage(
-                                    user.getUserDetails()!.image3.toString()),
+                                    widget.userModel.image3.toString()),
                               )),
                         ),
                       ),

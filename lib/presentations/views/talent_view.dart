@@ -1,6 +1,9 @@
 import 'package:booster/booster.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:you_2_art/application/post_provider.dart';
+import 'package:you_2_art/infrastrucuture/models/user.dart';
 import 'package:you_2_art/infrastrucuture/services/connection.dart';
 import 'package:you_2_art/presentations/elements/auth_text_field_simple.dart';
 import 'package:you_2_art/presentations/elements/grid_view_widget_talent.dart';
@@ -13,6 +16,32 @@ class TalentView extends StatefulWidget {
 class _TalentViewState extends State<TalentView> {
   TextEditingController _controller = TextEditingController();
   ConnectionServices _connectionServices = ConnectionServices();
+  List<UserModel> searchedConnections = [];
+
+  bool isSearchingAllow = false;
+  bool isSearched = false;
+
+  void _searchedConnections(String val) async {
+    var connectionList = Provider.of<SearchProviders>(context, listen: false);
+    print(val);
+    print("HI ${connectionList.getConnectionList().length}");
+    searchedConnections.clear();
+    for (var i in connectionList.getConnectionList()) {
+      var lowerCaseString = i.firstName.toString().toLowerCase() +
+          "" +
+          i.lastName.toString().toLowerCase();
+
+      var defaultCase = i.firstName.toString() + "" + i.lastName.toString();
+
+      if (lowerCaseString.contains(val) || defaultCase.contains(val)) {
+        searchedConnections.add(i);
+      } else {
+        isSearched = true;
+      }
+
+      setState(() {});
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +96,9 @@ class _TalentViewState extends State<TalentView> {
                 children: [
                   Expanded(
                       child: AuthTextFieldSimple(
+                    onChanged: (val) {
+                      _searchedConnections(val);
+                    },
                     label: 'Actor,Hyderabad',
                     number: 1,
                     controller: _controller,

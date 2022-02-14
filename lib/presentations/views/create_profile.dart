@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:booster/booster.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,7 @@ import 'package:you_2_art/presentations/elements/app_button_short.dart';
 import 'package:you_2_art/presentations/elements/auth_text_field.dart';
 import 'package:you_2_art/presentations/elements/flush_bar.dart';
 import 'package:you_2_art/presentations/elements/navigation_dialog.dart';
+import 'package:you_2_art/presentations/views/wrapper.dart';
 
 class CreateProfile extends StatefulWidget {
   final List<String> categoryList;
@@ -240,7 +242,7 @@ class _CreateProfileState extends State<CreateProfile> {
         showNavigationDialog(context,
             message: 'Profile has been created successfully.',
             buttonText: 'Okay', navigation: () {
-          // Get.offAll(() => BottomNavBar());
+          Get.offAll(() => WrapperView());
         }, secondButtonText: 'secondButtonText', showSecondButton: false);
       });
     });

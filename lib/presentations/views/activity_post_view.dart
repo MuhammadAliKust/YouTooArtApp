@@ -173,10 +173,15 @@ class ActivityPost extends StatelessWidget {
                                     builder: (context, child) {
                                       TalentModel talentModel =
                                           context.watch<TalentModel>();
-                                      return CommentTile(
-                                        commentModel: list[i],
-                                        talentModel: talentModel,
-                                      );
+                                      return list[0].docId == null ||
+                                              talentModel.docId == null
+                                          ? Center(
+                                              child:
+                                                  CircularProgressIndicator())
+                                          : CommentTile(
+                                              commentModel: list[i],
+                                              talentModel: talentModel,
+                                            );
                                     },
                                   );
                                 });

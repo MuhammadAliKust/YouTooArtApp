@@ -15,6 +15,7 @@ import 'package:you_2_art/presentations/elements/auth_text_field.dart';
 import 'package:you_2_art/presentations/elements/flush_bar.dart';
 import 'package:you_2_art/presentations/views/choose_category_view.dart';
 import 'package:you_2_art/presentations/views/user_profile.dart';
+import 'package:you_2_art/presentations/views/wrapper.dart';
 
 class LoginView extends StatefulWidget {
   @override
@@ -32,7 +33,8 @@ class _LoginViewState extends State<LoginView> {
   String? verificationId;
 
   final scaffoldKey = GlobalKey();
-  OTPTextEditController controller = OTPTextEditController(codeLength: 6);
+
+  // OTPTextEditController controller = OTPTextEditController(codeLength: 6);
   late OTPInteractor _otpInteractor;
   UserServices _userServices = UserServices();
 
@@ -123,7 +125,7 @@ class _LoginViewState extends State<LoginView> {
                               child: Row(
                                 children: [
                                   Booster.dynamicFontSize(
-                                    label: '+91',
+                                    label: '+92',
                                     fontSize: 16,
                                     fontWeight: FontWeight.w400,
                                     color: Color(0xff707070),
@@ -176,7 +178,7 @@ class _LoginViewState extends State<LoginView> {
                       AuthTextFieldBorder(
                           validator: (val) =>
                               val.isEmpty ? "Field cannot be empty" : null,
-                          controller: controller,
+                          controller: otpCode,
                           label: 'Enter OTP Code',
                           number: 1),
                       // Row(
@@ -201,7 +203,7 @@ class _LoginViewState extends State<LoginView> {
                       Booster.verticalSpace(40),
                       AppButton(
                         onTap: () {
-                          if (controller.text.isEmpty) {
+                          if (otpCode.text.isEmpty) {
                             getFlushBar(context,
                                 title: 'Kindly provide otp code.');
                             return;
@@ -211,9 +213,9 @@ class _LoginViewState extends State<LoginView> {
                               .first
                               .then((value) {
                             if (value.isNotEmpty) {
-                              login(controller.text);
+                              login(otpCode.text);
                             } else {
-                              register(controller.text);
+                              register(otpCode.text);
                             }
                           });
                         },
@@ -254,22 +256,22 @@ class _LoginViewState extends State<LoginView> {
         setState(() {
           authStatus = "OTP has been successfully send";
         });
-        controller = OTPTextEditController(
-          codeLength: 6,
-          //ignore: avoid_print
-          onCodeReceive: (code) {
-            print("Code Recieved : $code");
-          },
-          otpInteractor: _otpInteractor,
-        )..startListenUserConsent(
-            (code) {
-              final exp = RegExp(r'(\d{5})');
-              return exp.stringMatch(code ?? '') ?? '';
-            },
-            strategies: [
-              SampleStrategy(),
-            ],
-          );
+        // controller = OTPTextEditController(
+        //   codeLength: 6,
+        //   //ignore: avoid_print
+        //   onCodeReceive: (code) {
+        //     print("Code Recieved : $code");
+        //   },
+        //   otpInteractor: _otpInteractor,
+        // )..startListenUserConsent(
+        //     (code) {
+        //       final exp = RegExp(r'(\d{5})');
+        //       return exp.stringMatch(code ?? '') ?? '';
+        //     },
+        //     strategies: [
+        //       SampleStrategy(),
+        //     ],
+        //   );
         isLoading = false;
         setState(() {});
       },
@@ -322,7 +324,7 @@ class _LoginViewState extends State<LoginView> {
           .then((value) {
         Provider.of<UserProvider>(context, listen: false)
             .saveUserDetails(value);
-        Get.to(() => UserProfile());
+        Get.to(() => WrapperView());
       });
     });
   }

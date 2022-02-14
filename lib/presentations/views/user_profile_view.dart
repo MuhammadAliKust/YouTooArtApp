@@ -1,8 +1,7 @@
+import 'package:booster/booster.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:booster/booster.dart';
 import 'package:you_2_art/configs/front_end_configs.dart';
-import 'package:you_2_art/presentations/elements/app_button_shadow.dart';
 import 'package:you_2_art/presentations/elements/app_button_shadow_1.dart';
 import 'package:you_2_art/presentations/elements/user_profile_container_1.dart';
 
@@ -58,7 +57,7 @@ class UserProfileActivity extends StatelessWidget {
               UserProfileContainer1(
                   onTap: () {},
                   name: 'Pawan Kalyan',
-                  skills: 'Actor,Writer',
+                  skills: ['Actor,Writer'],
                   area: 'Hyderabad, Telangana',
                   contactno: '199',
                   postsno: '199',
@@ -104,7 +103,7 @@ class UserProfileActivity extends StatelessWidget {
                   Container(
                     decoration: BoxDecoration(
                       border: Border(
-                        bottom: BorderSide(color: Colors.black,width: 1.5),
+                        bottom: BorderSide(color: Colors.black, width: 1.5),
                       ),
                     ),
                     child: Booster.dynamicFontSize(
@@ -125,7 +124,8 @@ class UserProfileActivity extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 20,
-                          backgroundImage: AssetImage('assets/images/person.jpg'),
+                          backgroundImage:
+                              AssetImage('assets/images/person.jpg'),
                         ),
                         Booster.horizontalSpace(15),
                         Column(
@@ -165,7 +165,7 @@ class UserProfileActivity extends StatelessWidget {
               ),
               Booster.verticalSpace(13),
               Padding(
-                padding: const EdgeInsets.only(left: 15,right: 10),
+                padding: const EdgeInsets.only(left: 15, right: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -183,7 +183,8 @@ class UserProfileActivity extends StatelessWidget {
                             fontWeight: FontWeight.w700,
                             color: Color(0xff7A8FA6)),
                         Booster.horizontalSpace(15),
-                        ImageIcon(AssetImage('assets/images/Group 16131.png'),size: 15,color: Color(0xff7A8FA6)),
+                        ImageIcon(AssetImage('assets/images/Group 16131.png'),
+                            size: 15, color: Color(0xff7A8FA6)),
                         Booster.horizontalSpace(3),
                         Booster.dynamicFontSize(
                             label: '57',
@@ -191,7 +192,8 @@ class UserProfileActivity extends StatelessWidget {
                             fontWeight: FontWeight.w700,
                             color: Color(0xff7A8FA6)),
                         Booster.horizontalSpace(15),
-                        ImageIcon(AssetImage('assets/images/19.png'),size: 15,color: Color(0xff7A8FA6)),
+                        ImageIcon(AssetImage('assets/images/19.png'),
+                            size: 15, color: Color(0xff7A8FA6)),
                         Booster.horizontalSpace(3),
                         Booster.dynamicFontSize(
                             label: '33',
@@ -218,7 +220,8 @@ class UserProfileActivity extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 20,
-                          backgroundImage: AssetImage('assets/images/person.jpg'),
+                          backgroundImage:
+                              AssetImage('assets/images/person.jpg'),
                         ),
                         Booster.horizontalSpace(15),
                         Column(
@@ -246,7 +249,7 @@ class UserProfileActivity extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 55,right: 30),
+                padding: const EdgeInsets.only(left: 55, right: 30),
                 child: Booster.dynamicFontSize(
                     label:
                         'Wow! Just amazing. I love your profile content. Look forward to see more.Well done!',
@@ -257,7 +260,7 @@ class UserProfileActivity extends StatelessWidget {
               ),
               Booster.verticalSpace(13),
               Padding(
-                padding: const EdgeInsets.only(left: 15,right: 10),
+                padding: const EdgeInsets.only(left: 15, right: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -275,7 +278,8 @@ class UserProfileActivity extends StatelessWidget {
                             fontWeight: FontWeight.w700,
                             color: Color(0xff7A8FA6)),
                         Booster.horizontalSpace(15),
-                        ImageIcon(AssetImage('assets/images/Group 16131.png'),size: 15,color: Color(0xff7A8FA6)),
+                        ImageIcon(AssetImage('assets/images/Group 16131.png'),
+                            size: 15, color: Color(0xff7A8FA6)),
                         Booster.horizontalSpace(3),
                         Booster.dynamicFontSize(
                             label: '57',
@@ -283,7 +287,8 @@ class UserProfileActivity extends StatelessWidget {
                             fontWeight: FontWeight.w700,
                             color: Color(0xff7A8FA6)),
                         Booster.horizontalSpace(15),
-                        ImageIcon(AssetImage('assets/images/19.png'),size: 15,color: Color(0xff7A8FA6)),
+                        ImageIcon(AssetImage('assets/images/19.png'),
+                            size: 15, color: Color(0xff7A8FA6)),
                         Booster.horizontalSpace(3),
                         Booster.dynamicFontSize(
                             label: '33',

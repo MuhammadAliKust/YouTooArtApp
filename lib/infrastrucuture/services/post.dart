@@ -6,7 +6,7 @@ class PostServices {
   Stream<List<PostModel>> streamMyPosts(String uid) {
     return FirebaseFirestore.instance
         .collection('talentPostCollection')
-        .where('docId', isEqualTo: uid)
+        .where('authorID', isEqualTo: uid)
         .snapshots()
         .map((event) => event.docs
             .map((e) => PostModel.fromJson(e.data() as Map<String, dynamic>))
@@ -14,10 +14,12 @@ class PostServices {
   }
 
   ///Get All Posts
-  Stream<List<PostModel>> streamAllPosts() {
+  Stream<List<PostModel>> streamAllPosts(List<String> list) {
+    print(list);
     return FirebaseFirestore.instance
         .collection('talentPostCollection')
-        .orderBy('time', descending: true)
+        .where('authorID', whereIn: list.isEmpty ? [''] : list)
+        // .orderBy('time', descending: true)
         .snapshots()
         .map((event) => event.docs
             .map((e) => PostModel.fromJson(e.data() as Map<String, dynamic>))
