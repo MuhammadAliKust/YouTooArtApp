@@ -6,19 +6,28 @@ class PostServices {
   Stream<List<PostModel>> streamMyPosts(String uid) {
     return FirebaseFirestore.instance
         .collection('talentPostCollection')
-        .where('authorID', isEqualTo: uid)
+        .where('shareBy', arrayContains: uid)
         .snapshots()
         .map((event) => event.docs
             .map((e) => PostModel.fromJson(e.data() as Map<String, dynamic>))
             .toList());
   }
 
-  ///Get All Posts
-  Stream<List<PostModel>> streamAllPosts(List<String> list) {
-    print(list);
+  ///Get Post By ID
+  Stream<PostModel> streamSinglePost(String postID) {
     return FirebaseFirestore.instance
         .collection('talentPostCollection')
-        .where('authorID', whereIn: list.isEmpty ? [''] : list)
+        .doc(postID)
+        .snapshots()
+        .map((event) => PostModel.fromJson(event.data()!));
+  }
+
+  ///Get All Posts
+  Stream<List<PostModel>> streamAllPosts(List<String> list) {
+    print("list" + list.toString());
+    return FirebaseFirestore.instance
+        .collection('talentPostCollection')
+        .where('authorID', whereIn: list.isEmpty ? ['1'] : list)
         // .orderBy('time', descending: true)
         .snapshots()
         .map((event) => event.docs
@@ -59,5 +68,15 @@ class PostServices {
         .collection('talentPostCollection')
         .doc(postID)
         .delete();
+  }
+
+  ///Share Post
+  Future sharePost(String shareByID, String postID) async {
+    return await FirebaseFirestore.instance
+        .collection('talentPostCollection')
+        .doc(postID)
+        .update({
+      'shareBy': FieldValue.arrayUnion([shareByID])
+    });
   }
 }

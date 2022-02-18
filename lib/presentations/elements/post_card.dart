@@ -1,4 +1,5 @@
 import 'package:booster/booster.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,6 +17,7 @@ import 'package:you_2_art/presentations/elements/flush_bar.dart';
 import 'package:you_2_art/presentations/views/activity_post_view.dart';
 import 'package:you_2_art/presentations/views/create_post.dart';
 
+import 'loading_widgets/loading_widget.dart';
 import 'navigation_dialog.dart';
 
 class PostCard extends StatelessWidget {
@@ -173,12 +175,21 @@ class PostCard extends StatelessWidget {
             Container(
               height: 209,
               width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image: DecorationImage(
-                    fit: BoxFit.fill,
-                    image: NetworkImage(postModel.image.toString()),
-                  )),
+              child: CachedNetworkImage(
+                imageUrl: postModel.image.toString(),
+                imageBuilder: (context, imageProvider) => Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    image: DecorationImage(
+                        image: imageProvider,
+                        fit: BoxFit.fill,
+                        colorFilter:
+                            ColorFilter.mode(Colors.red, BlendMode.colorBurn)),
+                  ),
+                ),
+                placeholder: (context, url) => LoadingWidget(),
+                errorWidget: (context, url, error) => Icon(Icons.error),
+              ),
             ),
           Booster.verticalSpace(13),
           Padding(
@@ -222,14 +233,36 @@ class PostCard extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                         color: Color(0xff7A8FA6)),
                     Booster.horizontalSpace(15),
-                    ImageIcon(AssetImage('assets/images/19.png'),
-                        size: 15, color: Color(0xff7A8FA6)),
-                    Booster.horizontalSpace(3),
-                    Booster.dynamicFontSize(
-                        label: '0',
-                        fontSize: 9,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xff7A8FA6)),
+                    if (postModel.authorId !=
+                        user.getUserDetails()!.docID.toString())
+                      InkWell(
+                        onTap: () {
+                          _postServices
+                              .sharePost(
+                                  user.getUserDetails()!.docID.toString(),
+                                  postModel.docId.toString())
+                              .then((value) {
+                            getFlushBar(context,
+                                title:
+                                    'Post has been successfully shared on your timeline.');
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: ImageIcon(AssetImage('assets/images/19.png'),
+                              size: 15, color: Color(0xff7A8FA6)),
+                        ),
+                      ),
+                    if (postModel.authorId !=
+                        user.getUserDetails()!.docID.toString())
+                      Booster.horizontalSpace(3),
+                    if (postModel.authorId !=
+                        user.getUserDetails()!.docID.toString())
+                      Booster.dynamicFontSize(
+                          label: (postModel.shareBy!.length - 1).toString(),
+                          fontSize: 9,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xff7A8FA6)),
                   ],
                 ),
                 Booster.dynamicFontSize(

@@ -16,8 +16,9 @@ import 'package:you_2_art/presentations/elements/app_button_shadow.dart';
 import 'package:you_2_art/presentations/elements/app_button_short.dart';
 import 'package:you_2_art/presentations/elements/auth_text_field.dart';
 import 'package:you_2_art/presentations/elements/flush_bar.dart';
+import 'package:you_2_art/presentations/elements/loading_widgets/loading_widget.dart';
 import 'package:you_2_art/presentations/elements/navigation_dialog.dart';
-import 'package:you_2_art/presentations/views/wrapper.dart';
+import 'package:you_2_art/presentations/views/login_view.dart';
 
 class CreateProfile extends StatefulWidget {
   final List<String> categoryList;
@@ -54,6 +55,8 @@ class _CreateProfileState extends State<CreateProfile> {
   Widget build(BuildContext context) {
     var state = Provider.of<AppState>(context);
     return LoadingOverlay(
+      color: FrontEndConfigs.kPrimaryColor.withOpacity(0.7),
+      progressIndicator: LoadingWidget(),
       isLoading: state.getStateStatus() == StateStatus.IsBusy,
       child: Scaffold(
         body: SafeArea(
@@ -242,7 +245,7 @@ class _CreateProfileState extends State<CreateProfile> {
         showNavigationDialog(context,
             message: 'Profile has been created successfully.',
             buttonText: 'Okay', navigation: () {
-          Get.offAll(() => WrapperView());
+          Get.offAll(() => LoginView());
         }, secondButtonText: 'secondButtonText', showSecondButton: false);
       });
     });

@@ -1,20 +1,25 @@
 import 'package:booster/booster.dart';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
+import 'package:country_picker/country_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:otp_autofill/otp_autofill.dart';
+import 'package:otp_text_field/otp_field.dart';
+import 'package:otp_text_field/style.dart';
 import 'package:provider/provider.dart';
 import 'package:you_2_art/application/user_provider.dart';
 import 'package:you_2_art/configs/front_end_configs.dart';
 import 'package:you_2_art/infrastrucuture/services/user.dart';
 import 'package:you_2_art/presentations/elements/app_button.dart';
 import 'package:you_2_art/presentations/elements/auth_text_field.dart';
+import 'package:you_2_art/presentations/elements/error_dialog.dart';
 import 'package:you_2_art/presentations/elements/flush_bar.dart';
+import 'package:you_2_art/presentations/elements/loading_widgets/loading_widget.dart';
 import 'package:you_2_art/presentations/views/choose_category_view.dart';
-import 'package:you_2_art/presentations/views/user_profile.dart';
+import 'package:you_2_art/presentations/views/user_profile_edit_view.dart';
 import 'package:you_2_art/presentations/views/wrapper.dart';
 
 class LoginView extends StatefulWidget {
@@ -33,10 +38,13 @@ class _LoginViewState extends State<LoginView> {
   String? verificationId;
 
   final scaffoldKey = GlobalKey();
+  Country? _country;
 
   // OTPTextEditController controller = OTPTextEditController(codeLength: 6);
   late OTPInteractor _otpInteractor;
   UserServices _userServices = UserServices();
+  OtpFieldController otpFieldController = OtpFieldController();
+  String otpCodeFetcher = "";
 
   @override
   void initState() {
@@ -52,6 +60,8 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return LoadingOverlay(
       isLoading: isLoading,
+      color: FrontEndConfigs.kPrimaryColor.withOpacity(0.7),
+      progressIndicator: LoadingWidget(),
       child: Scaffold(
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20),
@@ -108,34 +118,41 @@ class _LoginViewState extends State<LoginView> {
                     color: Color(0xff000000)),
                 Booster.verticalSpace(20),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 13),
                   child: Column(
                     children: [
                       Row(
                         children: [
-                          Container(
-                            height: 60,
-                            decoration: BoxDecoration(
-                              boxShadow: FrontEndConfigs.boxShadow,
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              child: Row(
-                                children: [
-                                  Booster.dynamicFontSize(
-                                    label: '+92',
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w400,
-                                    color: Color(0xff707070),
-                                  ),
-                                  Icon(
-                                    Icons.arrow_drop_down,
-                                    color: Color(0xff707070),
-                                    size: 30,
-                                  )
-                                ],
+                          InkWell(
+                            onTap: () {
+                              getCountryPicker();
+                            },
+                            child: Container(
+                              height: 60,
+                              decoration: BoxDecoration(
+                                boxShadow: FrontEndConfigs.boxShadow,
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                child: Row(
+                                  children: [
+                                    Booster.dynamicFontSize(
+                                      label: _country == null
+                                          ? '+91'
+                                          : "+" + _country!.phoneCode,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                      color: Color(0xff707070),
+                                    ),
+                                    Icon(
+                                      Icons.arrow_drop_down,
+                                      color: Color(0xff707070),
+                                      size: 30,
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -145,6 +162,7 @@ class _LoginViewState extends State<LoginView> {
                                   validator: (val) => val.isEmpty
                                       ? "Field cannot be empty"
                                       : null,
+                                  isNumberField: true,
                                   controller: _numberController,
                                   label: 'Email Mobile Number',
                                   number: 1)),
@@ -175,12 +193,31 @@ class _LoginViewState extends State<LoginView> {
                         ],
                       ),
                       Booster.verticalSpace(20),
-                      AuthTextFieldBorder(
-                          validator: (val) =>
-                              val.isEmpty ? "Field cannot be empty" : null,
-                          controller: otpCode,
-                          label: 'Enter OTP Code',
-                          number: 1),
+                      // AuthTextFieldBorder(
+                      //     validator: (val) =>
+                      //         val.isEmpty ? "Field cannot be empty" : null,
+                      //     controller: otpCode,
+                      //     label: 'Enter OTP Code',
+                      //     number: 1),
+                      FittedBox(
+                        child: OTPTextField(
+                          controller: otpFieldController,
+                          length: 6,
+                          width: MediaQuery.of(context).size.width,
+                          fieldWidth: 50,
+                          style: TextStyle(fontSize: 15),
+                          textFieldAlignment: MainAxisAlignment.spaceAround,
+                          fieldStyle: FieldStyle.box,
+                          onCompleted: (pin) {
+                            print("Completed: " + pin);
+                          },
+                          onChanged: (val) {
+                            setState(() {
+                              otpCodeFetcher = val;
+                            });
+                          },
+                        ),
+                      ),
                       // Row(
                       //   children: [
                       //     Expanded(
@@ -203,19 +240,29 @@ class _LoginViewState extends State<LoginView> {
                       Booster.verticalSpace(40),
                       AppButton(
                         onTap: () {
-                          if (otpCode.text.isEmpty) {
+                          if (otpCodeFetcher == '') {
                             getFlushBar(context,
                                 title: 'Kindly provide otp code.');
                             return;
                           }
+                          isLoading = true;
+                          setState(() {});
                           _userServices
-                              .checkUserExists("+92" + _numberController.text)
+                              .checkUserExists(_country == null
+                                  ? "+91" + _numberController.text
+                                  : "+" +
+                                      _country!.phoneCode +
+                                      _numberController.text)
                               .first
                               .then((value) {
                             if (value.isNotEmpty) {
-                              login(otpCode.text);
+                              if (value[0].isProfileCompleted!) {
+                                login(otpCodeFetcher, true);
+                              } else {
+                                login(otpCodeFetcher, false);
+                              }
                             } else {
-                              register(otpCode.text);
+                              register(otpCodeFetcher);
                             }
                           });
                         },
@@ -239,7 +286,9 @@ class _LoginViewState extends State<LoginView> {
   Future<void> verifyPhoneNumber(BuildContext context) async {
     await FirebaseAuth.instance
         .verifyPhoneNumber(
-      phoneNumber: "+92" + _numberController.text,
+      phoneNumber: _country == null
+          ? "+91" + _numberController.text
+          : "+" + _country!.phoneCode + _numberController.text,
       timeout: const Duration(seconds: 15),
       verificationCompleted: (AuthCredential authCredential) {
         setState(() {
@@ -293,52 +342,71 @@ class _LoginViewState extends State<LoginView> {
   Future<void> register(String otp) async {
     isLoading = true;
     setState(() {});
-    await FirebaseAuth.instance
-        .signInWithCredential(PhoneAuthProvider.credential(
-      verificationId: verificationId!,
-      smsCode: otp,
-    ))
-        .then((value) {
+    try {
+      await FirebaseAuth.instance
+          .signInWithCredential(PhoneAuthProvider.credential(
+        verificationId: verificationId!,
+        smsCode: otp,
+      ))
+          .then((value) {
+        isLoading = false;
+        setState(() {});
+        Get.to(() => ChooseCategory(
+            _country == null
+                ? "+91" + _numberController.text
+                : "+" + _country!.phoneCode + _numberController.text,
+            value.user!.uid.toString()));
+      });
+    } on FirebaseAuthException catch (e) {
       isLoading = false;
       setState(() {});
-      Get.to(() => ChooseCategory(
-          '+92' + _numberController.text, value.user!.uid.toString()));
-    });
+      showErrorDialog(context, message: e.message.toString());
+    }
   }
 
-  Future<void> login(String otp) async {
-    isLoading = true;
-    setState(() {});
-    await FirebaseAuth.instance
-        .signInWithCredential(PhoneAuthProvider.credential(
-      verificationId: verificationId!,
-      smsCode: otp,
-    ))
-        .then((value) {
+  Future<void> login(String otp, bool isProfileCompleted) async {
+    try {
+      await FirebaseAuth.instance
+          .signInWithCredential(PhoneAuthProvider.credential(
+        verificationId: verificationId!,
+        smsCode: otp,
+      ))
+          .then((value) {
+        isLoading = false;
+        setState(() {});
+        print(value.user!.uid);
+        _userServices
+            .fetchUserData(value.user!.uid.toString())
+            .first
+            .then((value) {
+          Provider.of<UserProvider>(context, listen: false)
+              .saveUserDetails(value);
+          if (isProfileCompleted) {
+            Get.to(() => WrapperView());
+          } else {
+            Get.to(() => UserProfileEdit(true));
+          }
+        });
+      });
+    } on FirebaseAuthException catch (e) {
       isLoading = false;
       setState(() {});
-      print(value.user!.uid);
-      _userServices
-          .fetchUserData(value.user!.uid.toString())
-          .first
-          .then((value) {
-        Provider.of<UserProvider>(context, listen: false)
-            .saveUserDetails(value);
-        Get.to(() => WrapperView());
-      });
-    });
+      showErrorDialog(context, message: e.message.toString());
+    }
   }
 
   Future<void> phoneSignIn({required String phoneNumber}) async {
     FirebaseAuth.instance
         .verifyPhoneNumber(
-            phoneNumber: '+92' + _numberController.text,
+            phoneNumber: _country == null
+                ? "+91" + _numberController.text
+                : "+" + _country!.phoneCode + _numberController.text,
             verificationCompleted: _onVerificationCompleted,
             verificationFailed: _onVerificationFailed,
             codeSent: _onCodeSent,
             codeAutoRetrievalTimeout: _onCodeTimeout)
-        .catchError((e) {
-      print(e.toString());
+        .then((value) {
+      print("Called");
     });
   }
 
@@ -353,6 +421,7 @@ class _LoginViewState extends State<LoginView> {
         UserCredential credential =
             await user!.linkWithCredential(authCredential);
       } on FirebaseAuthException catch (e) {
+        print("HI Called : ${e.toString()}");
         if (e.code == 'provider-already-linked') {
           await FirebaseAuth.instance.signInWithCredential(authCredential);
         }
@@ -379,6 +448,19 @@ class _LoginViewState extends State<LoginView> {
 
   _onCodeTimeout(String timeout) {
     return null;
+  }
+
+  getCountryPicker() {
+    showCountryPicker(
+      context: context,
+      showPhoneCode: true,
+      // optional. Shows phone code before the country name.
+      onSelect: (Country country) {
+        _country = country;
+        setState(() {});
+        print('Select country: ${country.displayName}');
+      },
+    );
   }
 
   void showMessage(String errorMessage) {

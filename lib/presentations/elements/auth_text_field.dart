@@ -7,10 +7,12 @@ class AuthTextFieldBorder extends StatelessWidget {
   final int number;
   final TextEditingController controller;
   final Function(String) validator;
+  final bool isNumberField;
 
   AuthTextFieldBorder(
       {required this.label,
       required this.number,
+      this.isNumberField = false,
       required this.controller,
       required this.validator});
 
@@ -25,6 +27,8 @@ class AuthTextFieldBorder extends StatelessWidget {
         child: TextFormField(
           validator: (val) => validator(val!),
           controller: controller,
+          keyboardType:
+              isNumberField ? TextInputType.number : TextInputType.text,
           style: TextStyle(
             color: Colors.black,
             fontSize: 16,

@@ -8,6 +8,7 @@ import 'package:you_2_art/infrastrucuture/services/category.dart';
 import 'package:you_2_art/presentations/elements/app_button_short.dart';
 import 'package:you_2_art/presentations/elements/choose_category_title.dart';
 import 'package:you_2_art/presentations/elements/flush_bar.dart';
+import 'package:you_2_art/presentations/elements/loading_widgets/loading_category.dart';
 import 'package:you_2_art/presentations/views/create_profile.dart';
 
 class ChooseCategory extends StatefulWidget {
@@ -52,37 +53,40 @@ class _ChooseCategoryState extends State<ChooseCategory> {
                   builder: (context, child) {
                     List<CategoryModel> categoryList =
                         context.watch<List<CategoryModel>>();
-                    return ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: categoryList.length,
-                        itemBuilder: (context, i) {
-                          return Column(
-                            children: [
-                              ChooseCategoryTile(
-                                onTap: () {
-                                  if (_selectedCategories.contains(
-                                      categoryList[i].docId.toString())) {
-                                    _selectedCategories.remove(
-                                        categoryList[i].docId.toString());
-                                  } else {
-                                    _selectedCategories
-                                        .add(categoryList[i].docId.toString());
-                                  }
+                    return categoryList[0].docId == null
+                        ? LoadingReview()
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: categoryList.length,
+                            itemBuilder: (context, i) {
+                              return Column(
+                                children: [
+                                  ChooseCategoryTile(
+                                    onTap: () {
+                                      if (_selectedCategories.contains(
+                                          categoryList[i].docId.toString())) {
+                                        _selectedCategories.remove(
+                                            categoryList[i].docId.toString());
+                                      } else {
+                                        _selectedCategories.add(
+                                            categoryList[i].docId.toString());
+                                      }
 
-                                  setState(() {});
-                                },
-                                text: categoryList[i].categoryName.toString(),
-                                isSelected: _selectedCategories
-                                    .contains(categoryList[i].docId.toString()),
-                              ),
-                              Booster.verticalSpace(25),
-                            ],
-                          );
-                        });
+                                      setState(() {});
+                                    },
+                                    text:
+                                        categoryList[i].categoryName.toString(),
+                                    isSelected: _selectedCategories.contains(
+                                        categoryList[i].docId.toString()),
+                                  ),
+                                  Booster.verticalSpace(25),
+                                ],
+                              );
+                            });
                   },
                 ),
-                Booster.verticalSpace(15),
+                Booster.verticalSpace(25),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [

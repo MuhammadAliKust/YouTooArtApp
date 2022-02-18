@@ -13,6 +13,8 @@ import 'package:you_2_art/infrastrucuture/services/post.dart';
 import 'package:you_2_art/infrastrucuture/services/talent.dart';
 import 'package:you_2_art/presentations/elements/auth_text_field_simple.dart';
 import 'package:you_2_art/presentations/elements/comment_tile.dart';
+import 'package:you_2_art/presentations/elements/loading_widgets/loading_comments.dart';
+import 'package:you_2_art/presentations/elements/loading_widgets/loading_widget.dart';
 
 class ActivityPost extends StatelessWidget {
   final PostModel postModel;
@@ -49,192 +51,234 @@ class ActivityPost extends StatelessWidget {
           elevation: 0,
         ),
         body: StreamProvider.value(
-          value: _commentServices.streamPostComment(postModel.docId.toString()),
-          initialData: [CommentModel()],
+          value: _postServices.streamSinglePost(postModel.docId.toString()),
+          initialData: PostModel(),
           builder: (context, child) {
-            List<CommentModel> list = context.watch<List<CommentModel>>();
-            return Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (postModel.image! != "")
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 350,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(22),
-                                  bottomRight: Radius.circular(22),
+            PostModel _postDetails = context.watch<PostModel>();
+            return StreamProvider.value(
+              value: _commentServices
+                  .streamPostComment(postModel.docId.toString()),
+              initialData: [CommentModel()],
+              builder: (context, child) {
+                List<CommentModel> list = context.watch<List<CommentModel>>();
+                return _postDetails.docId == null
+                    ? LoadingWidget()
+                    : Column(
+                        children: [
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (postModel.image! != "")
+                                    Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      height: 350,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                            bottomLeft: Radius.circular(22),
+                                            bottomRight: Radius.circular(22),
+                                          ),
+                                          image: DecorationImage(
+                                            fit: BoxFit.fill,
+                                            image: NetworkImage(
+                                                postModel.image.toString()),
+                                          )),
+                                    ),
+                                  Booster.verticalSpace(10),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20.0),
+                                    child: Booster.dynamicFontSize(
+                                      label: postModel.postBody.toString(),
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    child: Column(
+                                      children: [
+                                        Booster.verticalSpace(20),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 15, right: 10),
+                                          child: Row(
+                                            children: [
+                                              InkWell(
+                                                onTap: () {
+                                                  if (!_postDetails.likers!
+                                                      .contains(user
+                                                          .getUserDetails()!
+                                                          .docID
+                                                          .toString()))
+                                                    _postServices
+                                                        .incrementPostCounter(
+                                                            postID: postModel
+                                                                .docId
+                                                                .toString(),
+                                                            likerID: (user
+                                                                .getUserDetails()!
+                                                                .docID
+                                                                .toString()));
+                                                },
+                                                child: Icon(
+                                                  CupertinoIcons.heart_solid,
+                                                  color: _postDetails.likers!
+                                                          .contains((user
+                                                              .getUserDetails()!
+                                                              .docID
+                                                              .toString()))
+                                                      ? Colors.red
+                                                      : Color(0xff7A8FA6),
+                                                  size: 18,
+                                                ),
+                                              ),
+                                              Booster.horizontalSpace(3),
+                                              Booster.dynamicFontSize(
+                                                  label: _postDetails
+                                                      .likeCounter
+                                                      .toString(),
+                                                  fontSize: 9,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: Color(0xff7A8FA6)),
+                                              Booster.horizontalSpace(15),
+                                              ImageIcon(
+                                                  AssetImage(
+                                                      'assets/images/Group 16131.png'),
+                                                  size: 15,
+                                                  color: Color(0xff7A8FA6)),
+                                              Booster.horizontalSpace(3),
+                                              Booster.dynamicFontSize(
+                                                  label: list.length.toString(),
+                                                  fontSize: 9,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: Color(0xff7A8FA6)),
+                                              Booster.horizontalSpace(15),
+                                              if (postModel.authorId !=
+                                                  user
+                                                      .getUserDetails()!
+                                                      .docID
+                                                      .toString())
+                                                ImageIcon(
+                                                    AssetImage(
+                                                        'assets/images/19.png'),
+                                                    size: 15,
+                                                    color: Color(0xff7A8FA6)),
+                                              if (postModel.authorId !=
+                                                  user
+                                                      .getUserDetails()!
+                                                      .docID
+                                                      .toString())
+                                                Booster.horizontalSpace(3),
+                                              if (postModel.authorId !=
+                                                  user
+                                                      .getUserDetails()!
+                                                      .docID
+                                                      .toString())
+                                                Booster.dynamicFontSize(
+                                                    label: '0',
+                                                    fontSize: 9,
+                                                    fontWeight: FontWeight.w700,
+                                                    color: Color(0xff7A8FA6)),
+                                            ],
+                                          ),
+                                        ),
+                                        Booster.verticalSpace(15),
+                                      ],
+                                    ),
+                                  ),
+                                  StreamProvider.value(
+                                    value: _commentServices.streamPostComment(
+                                        postModel.docId.toString()),
+                                    initialData: [CommentModel()],
+                                    builder: (context, child) {
+                                      List<CommentModel> list =
+                                          context.watch<List<CommentModel>>();
+                                      return ListView.builder(
+                                          physics:
+                                              NeverScrollableScrollPhysics(),
+                                          shrinkWrap: true,
+                                          itemCount: list.length,
+                                          itemBuilder: (context, i) {
+                                            return StreamProvider.value(
+                                              value: _talentServices
+                                                  .fetchUserData(list[i]
+                                                      .authorID
+                                                      .toString()),
+                                              initialData: TalentModel(),
+                                              builder: (context, child) {
+                                                TalentModel talentModel =
+                                                    context
+                                                        .watch<TalentModel>();
+                                                return list[0].docId == null ||
+                                                        talentModel.docId ==
+                                                            null
+                                                    ? LoadingComments()
+                                                    : CommentTile(
+                                                        commentModel: list[i],
+                                                        talentModel:
+                                                            talentModel,
+                                                      );
+                                              },
+                                            );
+                                          });
+                                    },
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 15),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                CircleAvatar(
+                                  radius: 20,
+                                  backgroundImage: NetworkImage(
+                                      user.getUserDetails()!.image.toString()),
                                 ),
-                                image: DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image:
-                                      NetworkImage(postModel.image.toString()),
+                                Booster.horizontalSpace(10),
+                                Expanded(
+                                    child: AuthTextFieldSimple(
+                                  label: 'Add a comment',
+                                  number: 1,
+                                  controller: _controller,
                                 )),
-                          ),
-                        Booster.verticalSpace(10),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: Booster.dynamicFontSize(
-                            label: postModel.postBody.toString(),
-                            fontSize: 14,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Column(
-                            children: [
-                              Booster.verticalSpace(20),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 15, right: 10),
-                                child: Row(
-                                  children: [
-                                    InkWell(
-                                      onTap: () {
-                                        if (!postModel.likers!.contains(user
-                                            .getUserDetails()!
-                                            .docID
-                                            .toString()))
-                                          _postServices.incrementPostCounter(
+                                Booster.horizontalSpace(10),
+                                Container(
+                                  // radius: 20,
+                                  child: InkWell(
+                                    onTap: () async {
+                                      await _commentServices
+                                          .addPostComment(CommentModel(
                                               postID:
                                                   postModel.docId.toString(),
-                                              likerID: (user
+                                              authorID: user
                                                   .getUserDetails()!
                                                   .docID
-                                                  .toString()));
-                                      },
-                                      child: Icon(
-                                        CupertinoIcons.heart_solid,
-                                        color: postModel.likers!.contains((user
-                                                .getUserDetails()!
-                                                .docID
-                                                .toString()))
-                                            ? Colors.red
-                                            : Color(0xff7A8FA6),
-                                        size: 18,
-                                      ),
-                                    ),
-                                    Booster.horizontalSpace(3),
-                                    Booster.dynamicFontSize(
-                                        label: postModel.likeCounter.toString(),
-                                        fontSize: 9,
-                                        fontWeight: FontWeight.w700,
-                                        color: Color(0xff7A8FA6)),
-                                    Booster.horizontalSpace(15),
-                                    ImageIcon(
-                                        AssetImage(
-                                            'assets/images/Group 16131.png'),
-                                        size: 15,
-                                        color: Color(0xff7A8FA6)),
-                                    Booster.horizontalSpace(3),
-                                    Booster.dynamicFontSize(
-                                        label: list.length.toString(),
-                                        fontSize: 9,
-                                        fontWeight: FontWeight.w700,
-                                        color: Color(0xff7A8FA6)),
-                                    Booster.horizontalSpace(15),
-                                    ImageIcon(
-                                        AssetImage('assets/images/19.png'),
-                                        size: 15,
-                                        color: Color(0xff7A8FA6)),
-                                    Booster.horizontalSpace(3),
-                                    Booster.dynamicFontSize(
-                                        label: '0',
-                                        fontSize: 9,
-                                        fontWeight: FontWeight.w700,
-                                        color: Color(0xff7A8FA6)),
-                                  ],
-                                ),
-                              ),
-                              Booster.verticalSpace(15),
-                            ],
-                          ),
-                        ),
-                        StreamProvider.value(
-                          value: _commentServices
-                              .streamPostComment(postModel.docId.toString()),
-                          initialData: [CommentModel()],
-                          builder: (context, child) {
-                            List<CommentModel> list =
-                                context.watch<List<CommentModel>>();
-                            return ListView.builder(
-                                physics: NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: list.length,
-                                itemBuilder: (context, i) {
-                                  return StreamProvider.value(
-                                    value: _talentServices.fetchUserData(
-                                        list[i].authorID.toString()),
-                                    initialData: TalentModel(),
-                                    builder: (context, child) {
-                                      TalentModel talentModel =
-                                          context.watch<TalentModel>();
-                                      return list[0].docId == null ||
-                                              talentModel.docId == null
-                                          ? Center(
-                                              child:
-                                                  CircularProgressIndicator())
-                                          : CommentTile(
-                                              commentModel: list[i],
-                                              talentModel: talentModel,
-                                            );
+                                                  .toString(),
+                                              time: Timestamp.fromDate(
+                                                  DateTime.now()),
+                                              comment: _controller.text))
+                                          .then((value) {
+                                        _controller.clear();
+                                      });
                                     },
-                                  );
-                                });
-                          },
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      CircleAvatar(
-                        radius: 20,
-                        backgroundImage: NetworkImage(
-                            user.getUserDetails()!.image.toString()),
-                      ),
-                      Booster.horizontalSpace(10),
-                      Expanded(
-                          child: AuthTextFieldSimple(
-                        label: 'Add a comment',
-                        number: 1,
-                        controller: _controller,
-                      )),
-                      Booster.horizontalSpace(10),
-                      Container(
-                        // radius: 20,
-                        child: InkWell(
-                          onTap: () async {
-                            await _commentServices
-                                .addPostComment(CommentModel(
-                                    postID: postModel.docId.toString(),
-                                    authorID:
-                                        user.getUserDetails()!.docID.toString(),
-                                    time: Timestamp.fromDate(DateTime.now()),
-                                    comment: _controller.text))
-                                .then((value) {
-                              _controller.clear();
-                            });
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Icon(Icons.send),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Icon(Icons.send),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                        ],
+                      );
+              },
             );
           },
         ));

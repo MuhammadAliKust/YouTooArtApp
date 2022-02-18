@@ -39,7 +39,7 @@ class AppButtonLarge1 extends StatelessWidget {
             borderRadius: BorderRadius.circular(32),
           ),
         ),
-        onPressed: () {},
+        onPressed: () =>onTap(),
       ),
     );
   }

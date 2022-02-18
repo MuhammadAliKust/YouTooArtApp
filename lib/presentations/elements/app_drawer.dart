@@ -1,4 +1,14 @@
+import 'package:booster/booster.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:provider/provider.dart';
+import 'package:you_2_art/application/user_provider.dart';
+import 'package:you_2_art/presentations/views/friend_request_list.dart';
+import 'package:you_2_art/presentations/views/login_view.dart';
+import 'package:you_2_art/presentations/views/my_friends_view.dart';
+import 'package:you_2_art/presentations/views/user_profile.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
@@ -7,15 +17,32 @@ class AppDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          _createHeader(),
+          _createHeader(context),
           _createDrawerItem(
-              icon: Icons.contacts, text: 'Profile', onTap: () => {}),
+              icon: Icons.person,
+              text: 'Profile',
+              onTap: () {
+                Get.to(() => UserProfile(false));
+              }),
           _createDrawerItem(
-              icon: Icons.contacts, text: 'Edit Profile', onTap: () => {}),
+              icon: Icons.book,
+              text: 'Friend Requests',
+              onTap: () {
+                Get.to(() => FriendRequestList());
+              }),
           _createDrawerItem(
-              icon: Icons.contacts, text: 'Friend Requests', onTap: () => {}),
+              icon: CupertinoIcons.group_solid,
+              text: 'My Friends',
+              onTap: () {
+                Get.to(() => MyFriendsView());
+              }),
           _createDrawerItem(
-              icon: Icons.contacts, text: 'Friends', onTap: () => {}),
+              icon: Icons.exit_to_app,
+              text: 'Logout',
+              onTap: () {
+                FirebaseAuth.instance.signOut();
+                Get.offAll(() => LoginView());
+              }),
           ListTile(
             title: Text('0.0.1'),
             onTap: () {},
@@ -25,21 +52,28 @@ class AppDrawer extends StatelessWidget {
     );
   }
 
-  Widget _createHeader() {
+  Widget _createHeader(BuildContext context) {
+    var user = Provider.of<UserProvider>(context);
     return DrawerHeader(
         margin: EdgeInsets.zero,
         padding: EdgeInsets.zero,
         decoration: BoxDecoration(),
-        child: Stack(children: <Widget>[
-          Positioned(
-              bottom: 12.0,
-              left: 16.0,
-              child: Text("Flutter Step-by-Step",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.w500))),
-        ]));
+        child: Column(
+          children: [
+            Booster.verticalSpace(10),
+            CircleAvatar(
+              radius: 50,
+              backgroundImage:
+                  NetworkImage(user.getUserDetails()!.image.toString()),
+            ),
+            Booster.verticalSpace(10),
+            Booster.dynamicFontSize(
+                label: user.getUserDetails()!.firstName.toString() +
+                    " " +
+                    user.getUserDetails()!.lastName.toString(),
+                fontSize: 16),
+          ],
+        ));
   }
 
   Widget _createDrawerItem(

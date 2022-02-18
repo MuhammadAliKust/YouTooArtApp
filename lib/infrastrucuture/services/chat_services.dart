@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:you_2_art/infrastrucuture/models/chatDetailsModel.dart';
 import 'package:you_2_art/infrastrucuture/models/messagModel.dart';
-import 'package:you_2_art/infrastrucuture/models/user.dart';
 
 class ChatServices {
   ///Get Recent Chats
@@ -27,6 +26,7 @@ class ChatServices {
         .collection('recent_chats')
         .doc(senderID)
         .collection('messages')
+        .orderBy('time',descending: true)
         .snapshots()
         .map((event) =>
             event.docs.map((e) => MessagesModel.fromJson(e.data())).toList());
@@ -103,6 +103,4 @@ class ChatServices {
         .doc(messageID)
         .update({'isRead': true});
   }
-
-
 }

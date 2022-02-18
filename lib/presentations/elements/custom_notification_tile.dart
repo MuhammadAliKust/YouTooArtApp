@@ -1,4 +1,5 @@
 import 'package:booster/booster.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:you_2_art/configs/front_end_configs.dart';
 
@@ -6,7 +7,7 @@ class CustomNotificationTile extends StatelessWidget {
   final String image;
   final String title;
   final String description;
-  final String time;
+  final Timestamp time;
   final bool isChat;
   final int? counter;
 
@@ -25,7 +26,7 @@ class CustomNotificationTile extends StatelessWidget {
       children: [
         ListTile(
             leading: CircleAvatar(
-              backgroundImage: AssetImage(image),
+              backgroundImage: NetworkImage(image),
             ),
             title: Align(
               alignment: Alignment.centerLeft,
@@ -56,7 +57,7 @@ class CustomNotificationTile extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Booster.dynamicFontSize(
-          label: time,
+          label: time.toDate().toString(),
           fontSize: 10,
           fontWeight: FontWeight.w500,
           color: Color(0x991A1A1A),

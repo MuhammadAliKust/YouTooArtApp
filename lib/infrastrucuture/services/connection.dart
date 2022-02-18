@@ -34,7 +34,7 @@ class ConnectionServices {
   Stream<List<FriendRequestModel>> streamFriendRequests(String myID) {
     return FirebaseFirestore.instance
         .collection('friendRequests')
-        .where('myID', isEqualTo: myID)
+        .where('otherID', isEqualTo: myID)
         .snapshots()
         .map((event) => event.docs
             .map((e) => FriendRequestModel.fromJson(e.data()))
@@ -106,5 +106,14 @@ class ConnectionServices {
         .snapshots()
         .map((event) =>
             event.docs.map((e) => FriendsModel.fromJson(e.data())).toList());
+  }
+
+  Stream<List<FriendRequestModel>> streamFriendRequestUsers(String myID) {
+    return FirebaseFirestore.instance
+        .collection('friendRequests')
+        .where('myID', isEqualTo: myID)
+        .snapshots()
+        .map((event) =>
+            event.docs.map((e) => FriendRequestModel.fromJson(e.data())).toList());
   }
 }

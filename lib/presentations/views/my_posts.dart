@@ -9,6 +9,8 @@ import 'package:you_2_art/infrastrucuture/services/comment.dart';
 import 'package:you_2_art/infrastrucuture/services/connection.dart';
 import 'package:you_2_art/infrastrucuture/services/post.dart';
 import 'package:you_2_art/infrastrucuture/services/talent.dart';
+import 'package:you_2_art/presentations/elements/loading_widgets/laoding_posts.dart';
+import 'package:you_2_art/presentations/elements/no_data.dart';
 import 'package:you_2_art/presentations/elements/post_card.dart';
 
 class MyPostsView extends StatelessWidget {
@@ -33,7 +35,7 @@ class MyPostsView extends StatelessWidget {
         List<PostModel> list = context.watch<List<PostModel>>();
 
         return list.length == 0
-            ? Text("NO Data")
+            ? NoDataView()
             : ListView.builder(
                 shrinkWrap: true,
                 physics: BouncingScrollPhysics(),
@@ -56,7 +58,7 @@ class MyPostsView extends StatelessWidget {
 
                             return list[i].docId == null ||
                                     userModel.image == null
-                                ? Container()
+                                ? LoadingPosts()
                                 : PostCard(
                                     talentModel: userModel,
                                     commentLength: commentList.length,

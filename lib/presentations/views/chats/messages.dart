@@ -1,13 +1,14 @@
 import 'dart:async';
 
 import 'package:booster/booster.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:you_2_art/configs/front_end_configs.dart';
 import 'package:you_2_art/infrastrucuture/models/chatDetailsModel.dart';
 import 'package:you_2_art/infrastrucuture/models/messagModel.dart';
 import 'package:you_2_art/infrastrucuture/services/chat_services.dart';
+import 'package:you_2_art/presentations/elements/loading_widgets/loading_widget.dart';
 
 class MessagesView extends StatefulWidget {
   final String myID;
@@ -65,7 +66,6 @@ class _MessagesViewState extends State<MessagesView> {
     return Container(
       child: Column(
         children: [
-          Divider(),
           // Padding(
           //   padding: const EdgeInsets.symmetric(horizontal: 14.0),
           //   child: Container(
@@ -217,18 +217,24 @@ class _MessagesViewState extends State<MessagesView> {
                           itemBuilder: (context, i) {
                             // if (callSetLength)
                             setList(context.watch<List<MessagesModel>>());
-                            return MessageTile(
-                              message: context
-                                  .watch<List<MessagesModel>>()[i]
-                                  .messageBody
-                                  .toString(),
-                              sendByMe: context
-                                      .watch<List<MessagesModel>>()[i]
-                                      .fromID ==
-                                  widget.myID,
-                              time:
-                                  context.watch<List<MessagesModel>>()[i].time,
-                            );
+                            return context
+                                        .watch<List<MessagesModel>>()[0]
+                                        .time ==
+                                    null
+                                ? LoadingWidget()
+                                : MessageTile(
+                                    message: context
+                                        .watch<List<MessagesModel>>()[i]
+                                        .messageBody
+                                        .toString(),
+                                    sendByMe: context
+                                            .watch<List<MessagesModel>>()[i]
+                                            .fromID ==
+                                        widget.myID,
+                                    time: context
+                                        .watch<List<MessagesModel>>()[i]
+                                        .time as Timestamp,
+                                  );
                           });
                 },
               ),
@@ -279,23 +285,21 @@ class _MessagesViewState extends State<MessagesView> {
                               _scrollController.position.maxScrollExtent,
                               duration: Duration(milliseconds: 700),
                               curve: Curves.ease));
+
                       _chatServices
                           .addNewMessage(
                               receiverID: widget.receiverID,
                               myID: widget.myID,
                               detailsModel: ChatDetailsModel(
                                 recentMessage: messageController.text,
-                                date: DateFormat('MM/dd/yyyy')
-                                    .format(DateTime.now()),
-                                time: DateFormat('hh:mm a')
-                                    .format(DateTime.now()),
+                                date: Timestamp.now(),
+                                time: Timestamp.now(),
                               ),
                               messageModel: MessagesModel(
                                   isRead: false,
-                                  time: DateFormat('MM/dd/yyyy hh:mm a')
-                                      .format(DateTime.now()),
+                                  time: Timestamp.now(),
                                   messageBody: messageController.text))
-                          .then((value) => messageController.clear());
+                          .then((value) => {});
                     },
                     icon: Icon(
                       Icons.send,
@@ -349,11 +353,10 @@ class _MessagesViewState extends State<MessagesView> {
 class MessageTile extends StatelessWidget {
   final String message;
   final bool sendByMe;
-  final time;
-  final date;
+  final Timestamp time;
 
   MessageTile(
-      {required this.message, required this.sendByMe, this.time, this.date});
+      {required this.message, required this.sendByMe, required this.time});
 
   @override
   Widget build(BuildContext context) {
@@ -392,7 +395,7 @@ class MessageTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(message ?? '',
+                Text(message,
                     textAlign: TextAlign.start,
                     style: TextStyle(
                         height: 1.3,
@@ -401,7 +404,7 @@ class MessageTile extends StatelessWidget {
                         fontWeight: FontWeight.w300)),
                 Booster.verticalSpace(5),
                 Text(
-                  'time',
+                  time.toDate().toString(),
                   style: TextStyle(fontSize: 9, color: Colors.white60),
                 ),
               ],

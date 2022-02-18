@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:you_2_art/application/post_provider.dart';
 import 'package:you_2_art/application/user_provider.dart';
 import 'package:you_2_art/infrastrucuture/models/comment.dart';
-import 'package:you_2_art/infrastrucuture/models/connection.dart';
+import 'package:you_2_art/infrastrucuture/models/friends_model.dart';
 import 'package:you_2_art/infrastrucuture/models/post.dart';
 import 'package:you_2_art/infrastrucuture/models/talent.dart';
 import 'package:you_2_art/infrastrucuture/services/comment.dart';
@@ -13,6 +13,8 @@ import 'package:you_2_art/infrastrucuture/services/connection.dart';
 import 'package:you_2_art/infrastrucuture/services/post.dart';
 import 'package:you_2_art/infrastrucuture/services/talent.dart';
 import 'package:you_2_art/presentations/elements/auth_text_field_simple.dart';
+import 'package:you_2_art/presentations/elements/loading_widgets/laoding_posts.dart';
+import 'package:you_2_art/presentations/elements/no_data.dart';
 import 'package:you_2_art/presentations/elements/post_card.dart';
 
 class ActivityHome extends StatefulWidget {
@@ -61,45 +63,6 @@ class _ActivityHomeState extends State<ActivityHome> {
     var post = Provider.of<SearchProviders>(context);
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          actions: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Row(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xffFFF6E0),
-                      borderRadius: BorderRadius.circular(22),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 7, vertical: 5),
-                      child: Row(
-                        children: [
-                          Icon(
-                            CupertinoIcons.bell_fill,
-                            size: 17,
-                            color: Color(0xffFEB400),
-                          ),
-                          Booster.dynamicFontSize(
-                              label: '9+',
-                              fontSize: 12,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Booster.horizontalSpace(7),
-                  Icon(Icons.menu, size: 22, color: Colors.black)
-                ],
-              ),
-            ),
-          ],
-        ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Column(
@@ -133,44 +96,89 @@ class _ActivityHomeState extends State<ActivityHome> {
               Booster.verticalSpace(5),
               Expanded(
                   child: StreamProvider.value(
-                      value: _connectionServices.streamAcceptedConnection(
+                      value: _connectionServices.streamMyFriends(
                           user.getUserDetails()!.docID.toString()),
-                      initialData: [ConnectionModel()],
+                      initialData: [FriendsModel()],
                       builder: (context, child) {
-                        List<ConnectionModel> connections =
-                            context.watch<List<ConnectionModel>>();
-                        List<String> docIDs = connections
-                            .map((e) => e.userId.toString())
-                            .toList();
+                        List<FriendsModel> connections =
+                            context.watch<List<FriendsModel>>();
+                        List<String> docIDs =
+                            connections.map((e) => e.id.toString()).toList();
                         return StreamProvider.value(
                           value: _postServices.streamAllPosts(docIDs),
                           initialData: [PostModel()],
                           builder: (context, child) {
                             List<PostModel> list =
                                 context.watch<List<PostModel>>();
-
-                            return list[0].docId == null
-                                ? Container(
-                                    height: MediaQuery.of(context).size.height -
-                                        150,
-                                    width: MediaQuery.of(context).size.width,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Center(
-                                            child: CircularProgressIndicator()),
-                                      ],
-                                    ),
-                                  )
-                                : list.length != 0
-                                    ? searchedPosts.isEmpty
-                                        ? isSearched == true
-                                            ? Text('No Data')
+                            print(list.length);
+                            return list.isNotEmpty
+                                ? list[0].docId == null
+                                    ? LoadingPosts()
+                                    : list.length != 0
+                                        ? searchedPosts.isEmpty
+                                            ? isSearched == true
+                                                ? Text('No Data')
+                                                : ListView.builder(
+                                                    physics:
+                                                        BouncingScrollPhysics(),
+                                                    itemCount: list.length,
+                                                    itemBuilder: (context, i) {
+                                                      return StreamProvider
+                                                          .value(
+                                                              value: _commentServices
+                                                                  .streamPostComment(
+                                                                      list[i]
+                                                                          .docId
+                                                                          .toString()),
+                                                              initialData: [
+                                                                CommentModel()
+                                                              ],
+                                                              builder: (context,
+                                                                  child) {
+                                                                List<CommentModel>
+                                                                    commentList =
+                                                                    context.watch<
+                                                                        List<
+                                                                            CommentModel>>();
+                                                                return StreamProvider
+                                                                    .value(
+                                                                  value: _talentServices
+                                                                      .fetchUserData(list[
+                                                                              i]
+                                                                          .authorId
+                                                                          .toString()),
+                                                                  initialData:
+                                                                      TalentModel(),
+                                                                  builder:
+                                                                      (context,
+                                                                          child) {
+                                                                    TalentModel
+                                                                        userModel =
+                                                                        context.watch<
+                                                                            TalentModel>();
+                                                                    post.savePostList(
+                                                                        list);
+                                                                    print(searchedPosts
+                                                                        .length);
+                                                                    return list[0].docId == null ||
+                                                                            userModel.docId ==
+                                                                                null
+                                                                        ? LoadingPosts()
+                                                                        : PostCard(
+                                                                            talentModel:
+                                                                                userModel,
+                                                                            commentLength:
+                                                                                commentList.length,
+                                                                            postModel: list[i]);
+                                                                  },
+                                                                );
+                                                              });
+                                                    },
+                                                  )
                                             : ListView.builder(
                                                 physics:
                                                     BouncingScrollPhysics(),
-                                                itemCount: list.length,
+                                                itemCount: searchedPosts.length,
                                                 itemBuilder: (context, i) {
                                                   return StreamProvider.value(
                                                       value: _commentServices
@@ -207,72 +215,22 @@ class _ActivityHomeState extends State<ActivityHome> {
                                                                 list);
                                                             print(searchedPosts
                                                                 .length);
-                                                            return list[0].docId ==
-                                                                        null ||
-                                                                    userModel
-                                                                            .docId ==
-                                                                        null
-                                                                ? CircularProgressIndicator()
-                                                                : PostCard(
-                                                                    talentModel:
-                                                                        userModel,
-                                                                    commentLength:
-                                                                        commentList
-                                                                            .length,
-                                                                    postModel:
-                                                                        list[
-                                                                            i]);
+                                                            return PostCard(
+                                                                talentModel:
+                                                                    userModel,
+                                                                commentLength:
+                                                                    commentList
+                                                                        .length,
+                                                                postModel:
+                                                                    searchedPosts[
+                                                                        i]);
                                                           },
                                                         );
                                                       });
                                                 },
                                               )
-                                        : ListView.builder(
-                                            physics: BouncingScrollPhysics(),
-                                            itemCount: searchedPosts.length,
-                                            itemBuilder: (context, i) {
-                                              return StreamProvider.value(
-                                                  value: _commentServices
-                                                      .streamPostComment(list[i]
-                                                          .docId
-                                                          .toString()),
-                                                  initialData: [CommentModel()],
-                                                  builder: (context, child) {
-                                                    List<CommentModel>
-                                                        commentList =
-                                                        context.watch<
-                                                            List<
-                                                                CommentModel>>();
-                                                    return StreamProvider.value(
-                                                      value: _talentServices
-                                                          .fetchUserData(list[i]
-                                                              .authorId
-                                                              .toString()),
-                                                      initialData:
-                                                          TalentModel(),
-                                                      builder:
-                                                          (context, child) {
-                                                        TalentModel userModel =
-                                                            context.watch<
-                                                                TalentModel>();
-                                                        post.savePostList(list);
-                                                        print(searchedPosts
-                                                            .length);
-                                                        return PostCard(
-                                                            talentModel:
-                                                                userModel,
-                                                            commentLength:
-                                                                commentList
-                                                                    .length,
-                                                            postModel:
-                                                                searchedPosts[
-                                                                    i]);
-                                                      },
-                                                    );
-                                                  });
-                                            },
-                                          )
-                                    : Text("no Data");
+                                        : NoDataView()
+                                : NoDataView();
                           },
                         );
                       })),

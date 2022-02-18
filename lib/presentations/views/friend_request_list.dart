@@ -15,6 +15,7 @@ class FriendRequestList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var user = Provider.of<UserProvider>(context);
+    print(user.getUserDetails()!.docID.toString());
     return Scaffold(
       appBar: AppBar(
         title: Text("Friend Requests"),
@@ -33,8 +34,7 @@ class FriendRequestList extends StatelessWidget {
               itemCount: list.length,
               itemBuilder: (context, i) {
                 return StreamProvider.value(
-                  value:
-                      _userServices.fetchUserData(list[i].otherId.toString()),
+                  value: _userServices.fetchUserData(list[i].myId.toString()),
                   initialData: UserModel(),
                   builder: (context, child) {
                     UserModel _userModel = context.watch<UserModel>();
@@ -128,7 +128,7 @@ class FriendRequestList extends StatelessWidget {
                                                           .docID
                                                           .toString(),
                                                       otherID: list[i]
-                                                          .otherId
+                                                          .myId
                                                           .toString(),
                                                       docID: list[i]
                                                           .docId

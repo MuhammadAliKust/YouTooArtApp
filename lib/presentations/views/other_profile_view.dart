@@ -1,6 +1,7 @@
 import 'package:booster/booster.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:you_2_art/application/user_provider.dart';
 import 'package:you_2_art/configs/front_end_configs.dart';
@@ -9,10 +10,13 @@ import 'package:you_2_art/presentations/elements/app_button_shadow_1.dart';
 import 'package:you_2_art/presentations/elements/user_profile_container_1.dart';
 import 'package:you_2_art/presentations/views/my_posts.dart';
 
+import 'chats/messages.dart';
+
 class OtherUserProfileView extends StatefulWidget {
   final UserModel userModel;
+  final bool showConnectBtn;
 
-  OtherUserProfileView(this.userModel);
+  OtherUserProfileView({required this.userModel, required this.showConnectBtn});
 
   @override
   _OtherUserProfileViewState createState() => _OtherUserProfileViewState();
@@ -89,15 +93,21 @@ class _OtherUserProfileViewState extends State<OtherUserProfileView> {
                 padding: const EdgeInsets.only(left: 97),
                 child: Row(
                   children: [
-                    AppButtonLarge1(
-                        onTap: () {},
-                        text: 'Connect',
-                        backgroundcolor: Colors.white,
-                        shadowcolor: Color(0xffF1F1F1),
-                        textcolor: Colors.black),
+                    if (!widget.showConnectBtn) Container(),
+                    if (widget.showConnectBtn)
+                      AppButtonLarge1(
+                          onTap: () {},
+                          text: 'Connect',
+                          backgroundcolor: Colors.white,
+                          shadowcolor: Color(0xffF1F1F1),
+                          textcolor: Colors.black),
                     Booster.horizontalSpace(10),
                     AppButtonLarge1(
-                        onTap: () {},
+                        onTap: () {
+                          Get.to(() => MessagesView(
+                              receiverID: widget.userModel.docID.toString(),
+                              myID: user.getUserDetails()!.docID.toString()));
+                        },
                         text: 'Message',
                         backgroundcolor: Colors.white,
                         shadowcolor: Color(0xffF1F1F1),

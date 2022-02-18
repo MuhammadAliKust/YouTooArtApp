@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ChatDetailsModel {
   String? recentMessage;
   String? myID;
   String? otherID;
-  String? time;
-  String? date;
+  var time;
+  var date;
   int? sortTime;
 
   ChatDetailsModel({

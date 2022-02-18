@@ -1,6 +1,7 @@
 import 'package:booster/booster.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:you_2_art/application/user_provider.dart';
 import 'package:you_2_art/infrastrucuture/models/chatDetailsModel.dart';
@@ -33,9 +34,6 @@ class _RecentChatListState extends State<RecentChatList> {
 
   Widget _buildUI(BuildContext context, UserModel _userModel) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Chat"),
-      ),
       body: _getUI(context, _userModel),
     );
   }
@@ -81,7 +79,7 @@ class _RecentChatListState extends State<RecentChatList> {
                               initialData: [MessagesModel()],
                               builder: (unReadContext, child) {
                                 return unReadContext
-                                            .watch<List<MessagesModel>>()==
+                                            .watch<List<MessagesModel>>() ==
                                         null
                                     ? CircularProgressIndicator()
                                     : StreamProvider.value(
@@ -106,33 +104,33 @@ class _RecentChatListState extends State<RecentChatList> {
                                                                 ChatDetailsModel>>()[i];
                                                     setState(() {});
                                                     // return;
-                                                    Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                MessagesView(
-                                                                  receiverID: _model
-                                                                      .otherID
-                                                                      .toString(),
-                                                                  myID: user.getUserDetails()!
-                                                                      .docID
-                                                                      .toString(),
-                                                                )));
+                                                    pushNewScreen(context,
+                                                        screen: MessagesView(
+                                                          receiverID: _model
+                                                              .otherID
+                                                              .toString(),
+                                                          myID: user
+                                                              .getUserDetails()!
+                                                              .docID
+                                                              .toString(),
+                                                        ),
+                                                        withNavBar: false);
                                                   },
                                                   child: CustomNotificationTile(
                                                     image:
-                                                        "assets/images/logo.jpg",
+                                                    userContext
+                                                        .watch<UserModel>()
+                                                        .image
+                                                        .toString(),
                                                     title: userContext
                                                             .watch<UserModel>()
-                                                            .firstName ??
-                                                        "" +
-                                                            " " +
-                                                            userContext
-                                                                .watch<
-                                                                    UserModel>()
-                                                                .lastName
-                                                                .toString() ??
-                                                        "",
+                                                            .firstName
+                                                            .toString() +
+                                                        " " +
+                                                        userContext
+                                                            .watch<UserModel>()
+                                                            .lastName
+                                                            .toString(),
                                                     description: context
                                                             .watch<
                                                                 List<
@@ -141,13 +139,12 @@ class _RecentChatListState extends State<RecentChatList> {
                                                             .recentMessage ??
                                                         "",
                                                     time: context
-                                                            .watch<
-                                                                List<
-                                                                    ChatDetailsModel>>()[
-                                                                i]
-                                                            .time
-                                                            .toString() ??
-                                                        "",
+                                                        .watch<
+                                                            List<
+                                                                ChatDetailsModel>>()[
+                                                            i]
+                                                        .time
+                                                    as Timestamp,
                                                     counter: unReadContext
                                                         .watch<
                                                             List<

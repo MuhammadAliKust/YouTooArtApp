@@ -20,12 +20,14 @@ class PostModel {
     this.likeCounter,
     this.time,
     this.likers,
+    this.shareBy,
   });
 
   String? docId;
   String? authorId;
   String? postBody;
   List<String>? likers;
+  List<String>? shareBy;
   String? image;
   int? likeCounter;
   Timestamp? time;
@@ -38,6 +40,7 @@ class PostModel {
         time: json["time"],
         likeCounter: json["likeCounter"],
         likers: List<String>.from(json["likers"].map((x) => x)),
+    shareBy: List<String>.from(json["shareBy"].map((x) => x)),
       );
 
   Map<String, dynamic> toJson(String docID) => {
@@ -48,5 +51,6 @@ class PostModel {
         "likeCounter": 0,
         "time": Timestamp.fromDate(DateTime.now()),
         "likers":[],
+        "shareBy":shareBy,
       };
 }

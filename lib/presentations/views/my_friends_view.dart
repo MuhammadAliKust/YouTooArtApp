@@ -99,7 +99,9 @@ class MyFriendsView extends StatelessWidget {
                                         InkWell(
                                           onTap: () {
                                             Get.to(() => OtherUserProfileView(
-                                                _userModel));
+                                                  userModel: _userModel,
+                                                  showConnectBtn: false,
+                                                ));
                                           },
                                           child: Container(
                                             decoration: BoxDecoration(

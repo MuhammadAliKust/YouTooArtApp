@@ -29,6 +29,7 @@ class UserServices {
       'image1': userModel.image1,
       'image2': userModel.image2,
       'image3': userModel.image3,
+      'isProfileCompleted': userModel.isProfileCompleted,
       'firstName': userModel.firstName,
       'lastName': userModel.lastName,
       'city': userModel.city,

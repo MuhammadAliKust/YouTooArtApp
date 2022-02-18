@@ -1,4 +1,5 @@
 import 'package:booster/booster.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,7 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:you_2_art/application/user_provider.dart';
 import 'package:you_2_art/configs/front_end_configs.dart';
 import 'package:you_2_art/infrastrucuture/models/post.dart';
-import 'package:you_2_art/presentations/elements/app_button_shadow_1.dart';
+import 'package:you_2_art/presentations/elements/app_drawer.dart';
+import 'package:you_2_art/presentations/elements/loading_widgets/loading_widget.dart';
 import 'package:you_2_art/presentations/elements/user_profile_container_1.dart';
 import 'package:you_2_art/presentations/views/my_posts.dart';
 
@@ -44,7 +46,7 @@ class _UserProfileState extends State<UserProfile> {
         elevation: 0,
         actions: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 15),
             child: Row(
               children: [
                 Container(
@@ -60,7 +62,7 @@ class _UserProfileState extends State<UserProfile> {
                         Icon(
                           CupertinoIcons.bell_fill,
                           size: 17,
-                          color: FrontEndConfigs.kPrimaryColor,
+                          color: Color(0xffFEB400),
                         ),
                         Booster.dynamicFontSize(
                             label: '9+',
@@ -72,12 +74,20 @@ class _UserProfileState extends State<UserProfile> {
                   ),
                 ),
                 Booster.horizontalSpace(7),
-                Icon(Icons.menu, size: 22, color: Colors.black)
+                Builder(
+                  builder: (context) {
+                    return IconButton(
+                      onPressed: () => Scaffold.of(context).openEndDrawer(),
+                      icon: Icon(Icons.menu, size: 28, color: Colors.black),
+                    );
+                  },
+                ),
               ],
             ),
-          )
+          ),
         ],
       ),
+      endDrawer: AppDrawer(),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: SingleChildScrollView(
@@ -97,27 +107,27 @@ class _UserProfileState extends State<UserProfile> {
                   postsno: user.getUserDetails()!.posts.toString(),
                   image: user.getUserDetails()!.image.toString()),
               Booster.verticalSpace(3),
-              if (!widget.fromLogin)
-                Padding(
-                  padding: const EdgeInsets.only(left: 97),
-                  child: Row(
-                    children: [
-                      AppButtonLarge1(
-                          onTap: () {},
-                          text: 'Connect',
-                          backgroundcolor: Colors.white,
-                          shadowcolor: Color(0xffF1F1F1),
-                          textcolor: Colors.black),
-                      Booster.horizontalSpace(10),
-                      AppButtonLarge1(
-                          onTap: () {},
-                          text: 'Message',
-                          backgroundcolor: Colors.white,
-                          shadowcolor: Color(0xffF1F1F1),
-                          textcolor: Colors.black),
-                    ],
-                  ),
-                ),
+              // if (!widget.fromLogin)
+              //   Padding(
+              //     padding: const EdgeInsets.only(left: 97),
+              //     child: Row(
+              //       children: [
+              //         AppButtonLarge1(
+              //             onTap: () {},
+              //             text: 'Connect',
+              //             backgroundcolor: Colors.white,
+              //             shadowcolor: Color(0xffF1F1F1),
+              //             textcolor: Colors.black),
+              //         Booster.horizontalSpace(10),
+              //         AppButtonLarge1(
+              //             onTap: () {},
+              //             text: 'Message',
+              //             backgroundcolor: Colors.white,
+              //             shadowcolor: Color(0xffF1F1F1),
+              //             textcolor: Colors.black),
+              //       ],
+              //     ),
+              //   ),
               Booster.verticalSpace(10),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -202,13 +212,24 @@ class _UserProfileState extends State<UserProfile> {
                           Container(
                             height: 108,
                             width: 108,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                image: DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image: NetworkImage(
-                                      user.getUserDetails()!.image1.toString()),
-                                )),
+                            child: CachedNetworkImage(
+                              imageUrl:
+                                  user.getUserDetails()!.image1.toString(),
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  image: DecorationImage(
+                                      image: imageProvider,
+                                      fit: BoxFit.fill,
+                                      colorFilter: ColorFilter.mode(
+                                          Colors.red, BlendMode.colorBurn)),
+                                ),
+                              ),
+                              placeholder: (context, url) => LoadingWidget(),
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
+                            ),
                           ),
                         Booster.verticalSpace(10),
                         if (user.getUserDetails()!.image2 == null)
@@ -226,13 +247,24 @@ class _UserProfileState extends State<UserProfile> {
                           Container(
                             height: 108,
                             width: 108,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                image: DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image: NetworkImage(
-                                      user.getUserDetails()!.image2.toString()),
-                                )),
+                            child: CachedNetworkImage(
+                              imageUrl:
+                                  user.getUserDetails()!.image2.toString(),
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  image: DecorationImage(
+                                      image: imageProvider,
+                                      fit: BoxFit.fill,
+                                      colorFilter: ColorFilter.mode(
+                                          Colors.red, BlendMode.colorBurn)),
+                                ),
+                              ),
+                              placeholder: (context, url) => LoadingWidget(),
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
+                            ),
                           ),
                       ],
                     ),
@@ -252,14 +284,23 @@ class _UserProfileState extends State<UserProfile> {
                     if (user.getUserDetails()!.image3 != null)
                       Expanded(
                         child: Container(
-                          height: 225,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              image: DecorationImage(
-                                fit: BoxFit.fill,
-                                image: NetworkImage(
-                                    user.getUserDetails()!.image3.toString()),
-                              )),
+                          height: 255,
+                          child: CachedNetworkImage(
+                            imageUrl: user.getUserDetails()!.image3.toString(),
+                            imageBuilder: (context, imageProvider) => Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.fill,
+                                    colorFilter: ColorFilter.mode(
+                                        Colors.red, BlendMode.colorBurn)),
+                              ),
+                            ),
+                            placeholder: (context, url) => LoadingWidget(),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                          ),
                         ),
                       ),
                   ],

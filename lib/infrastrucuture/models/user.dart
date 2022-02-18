@@ -24,6 +24,7 @@ class UserModel {
       this.docID,
       this.image1,
       this.image2,
+      this.isProfileCompleted,
       this.image3});
 
   List<String>? categories;
@@ -41,6 +42,7 @@ class UserModel {
   String? phoneNumber;
   int? connect;
   int? posts;
+  bool? isProfileCompleted;
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
         categories: List<String>.from(json["categories"].map((x) => x)),
@@ -57,6 +59,7 @@ class UserModel {
         phoneNumber: json["phoneNumber"],
         posts: json["posts"],
         connect: json["connect"],
+        isProfileCompleted: json["isProfileCompleted"],
       );
 
   Map<String, dynamic> toJson(String docID) => {
@@ -72,6 +75,7 @@ class UserModel {
         "state": state,
         "shortBio": shortBio,
         "phoneNumber": phoneNumber,
+        "isProfileCompleted": false,
         "connect": 0,
         "posts": 0,
       };
